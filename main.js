@@ -278,3 +278,6 @@ OBR.onReady(async () => {
   if (ready) renderLocation();
   OBR.scene.onReadyChange((r) => r && renderLocation());
 });
+
+window.addEventListener("error", (e) => log("JS-fel: " + e.message, "warn"));
+window.addEventListener("unhandledrejection", (e) => log("Fel: " + (e.reason?.message || e.reason), "warn"));
