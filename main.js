@@ -99,7 +99,7 @@ async function pickImages() {
   log("Öppnar bildväljaren…");
   let picked;
   try {
-    picked = await OBR.assets.downloadImages(true, "", "CHARACTER");
+    picked = await OBR.assets.downloadImages(true, undefined, "CHARACTER");
   } catch (e) {
     log("Bildväljaren gav fel: " + (e?.message || JSON.stringify(e)), "warn");
     return;
