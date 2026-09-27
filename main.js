@@ -256,6 +256,17 @@ async function removePlaced() {
 }
 let confirmRemove = false;
 
+// Visar spelarnas tokens: vilket statblock de är kopplade till, HP och vilka tillägg som sparat data på dem.
+async function showPlayers() {
+  const items = await OBR.scene.items.getItems((i) => i.layer === "CHARACTER" && !i.metadata?.[PLACED_KEY]);
+  if (!items.length) { log("Inga spelartokens i scenen.", "warn"); return; }
+  items.forEach((i) => {
+    const g = i.metadata?.[GMG_KEY];
+    const others = Object.keys(i.metadata || {}).filter((k) => k !== GMG_KEY).map((k) => k.split("/")[0]).join(", ");
+    log(`${i.name}: ${g ? `statblock ${g.sheet || "(inget)"}, HP ${g.hp}/${g.maxHp}, AC ${g.armorClass}, init +${g.stats?.initiativeBonus}` : "ej i Grimoire"}${others ? ` · övrigt: ${others}` : ""}`, g?.sheet ? "ok" : "warn");
+  });
+}
+
 // Räknar tillbaka varje placerad tokens position till en ruta på kartan och jämför med planen.
 async function verify() {
   const loc = currentLocation();
@@ -310,6 +321,7 @@ OBR.onReady(async () => {
   $("#placeBtn").addEventListener("click", place);
   $("#removeBtn").addEventListener("click", removePlaced);
   $("#verifyBtn").addEventListener("click", verify);
+  $("#playersBtn").addEventListener("click", showPlayers);
   await loadTokenMap();
   OBR.room.onMetadataChange((m) => { tokenMap = m[TOKENS_KEY] || {}; renderTokenStatus(); });
   const ready = await OBR.scene.isReady();
