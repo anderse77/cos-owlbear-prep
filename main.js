@@ -279,6 +279,13 @@ async function verify() {
     const g = i.metadata?.[GMG_KEY];
     log(`${ok ? "✓" : "✗"} ${i.name}: ruta ${col.toFixed(1)},${row.toFixed(1)}${e ? ` (plan ${e.cell})` : ""}, ${i.visible ? "SYNLIG" : "dold"}, ${g ? `${g.sheet} HP ${g.hp}` : "ingen Grimoire-koppling"}`, ok && !i.visible && g ? "ok" : "warn");
   });
+  try {
+    const mb = await OBR.scene.items.getItemBounds([map.id]);
+    const tb = await OBR.scene.items.getItemBounds(items.map((i) => i.id));
+    log(`Kartans yta: ${Math.round(mb.min.x)},${Math.round(mb.min.y)} – ${Math.round(mb.max.x)},${Math.round(mb.max.y)}. Monstrens yta: ${Math.round(tb.min.x)},${Math.round(tb.min.y)} – ${Math.round(tb.max.x)},${Math.round(tb.max.y)}. Kartans position ${Math.round(map.position.x)},${Math.round(map.position.y)}, offset ${map.grid.offset.x},${map.grid.offset.y}.`);
+    await OBR.player.select(items.map((i) => i.id));
+    await OBR.viewport.animateToBounds(tb);
+  } catch (e) { log("Kunde inte visa: " + e.message, "warn"); }
   log(`Karta: ${map.name} ${map.image.width}×${map.image.height}, dpi ${map.grid.dpi}, skala ${map.scale.x}×${map.scale.y}.`);
   log(bad ? `${bad} token(s) avviker från planen.` : `Alla ${items.length} tokens står på planerade rutor.`, bad ? "warn" : "ok");
 }
