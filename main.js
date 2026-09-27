@@ -96,8 +96,15 @@ function renderTokenStatus() {
 }
 
 async function pickImages() {
-  const picked = await OBR.assets.downloadImages(true, "", "CHARACTER");
-  if (!picked || picked.length === 0) return;
+  log("Öppnar bildväljaren…");
+  let picked;
+  try {
+    picked = await OBR.assets.downloadImages(true, "", "CHARACTER");
+  } catch (e) {
+    log("Bildväljaren gav fel: " + (e?.message || JSON.stringify(e)), "warn");
+    return;
+  }
+  if (!picked || picked.length === 0) { log("Inga bilder valdes."); return; }
   const names = Object.keys(MONSTERS);
   let matched = 0;
   const unknown = [];
