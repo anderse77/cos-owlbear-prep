@@ -47,16 +47,19 @@ function getLimits(sb) {
 
 async function gmgMetadata(monsterName) {
   const m = MONSTERS[monsterName];
-  let hp = m.fallback.hp, ac = m.fallback.ac, init = m.fallback.init, limits = [], source = "reserv";
-  try {
+  let hp, ac, init, limits = [], source;
+  if (m.stats) {
+    ({ hp, ac, init } = m.stats);
+    limits = structuredClone(m.stats.limits || []);
+    source = "inbyggda värden från Tabletop Almanac";
+  } else {
+    // Monster utan inbyggda värden: försök hämta (fungerar bara om TA tillåter anropet).
     const sb = await fetchStatblock(monsterName, m.slug);
     hp = sb.hp.value;
     ac = sb.armor_class.value;
     init = sb.initiative ?? Math.floor(((sb.stats?.dexterity ?? 10) - 10) / 2);
     limits = getLimits(sb);
     source = "Tabletop Almanac";
-  } catch (e) {
-    log(`${monsterName}: ${e.message}. Använder reservvärden (HP ${hp}, AC ${ac}).`, "warn");
   }
   return {
     source,
@@ -253,6 +256,33 @@ async function removePlaced() {
 }
 let confirmRemove = false;
 
+// Räknar tillbaka varje placerad tokens position till en ruta på kartan och jämför med planen.
+async function verify() {
+  const loc = currentLocation();
+  const items = await placedItems(loc.id);
+  if (!items.length) { log("Inget placerat att kontrollera.", ""); return; }
+  const map = await findMap();
+  const sceneDpi = await OBR.scene.grid.getDpi();
+  const kx = (sceneDpi / map.grid.dpi) * map.scale.x;
+  const ky = (sceneDpi / map.grid.dpi) * map.scale.y;
+  const expected = {};
+  loc.groups.forEach((g) => g.tokens.forEach((t) => (expected[t.name] = { cell: t.cell, size: MONSTERS[g.monster].size })));
+  let bad = 0;
+  items.forEach((i) => {
+    const e = expected[i.name];
+    const size = e?.size || 1;
+    const px = (i.position.x - map.position.x) / kx + map.grid.offset.x;
+    const py = (i.position.y - map.position.y) / ky + map.grid.offset.y;
+    const col = px / loc.map.cell - size / 2, row = py / loc.map.cell - size / 2;
+    const ok = e && Math.abs(col - e.cell[0]) < 0.25 && Math.abs(row - e.cell[1]) < 0.25;
+    if (!ok) bad++;
+    const g = i.metadata?.[GMG_KEY];
+    log(`${ok ? "✓" : "✗"} ${i.name}: ruta ${col.toFixed(1)},${row.toFixed(1)}${e ? ` (plan ${e.cell})` : ""}, ${i.visible ? "SYNLIG" : "dold"}, ${g ? `${g.sheet} HP ${g.hp}` : "ingen Grimoire-koppling"}`, ok && !i.visible && g ? "ok" : "warn");
+  });
+  log(`Karta: ${map.name} ${map.image.width}×${map.image.height}, dpi ${map.grid.dpi}, skala ${map.scale.x}×${map.scale.y}.`);
+  log(bad ? `${bad} token(s) avviker från planen.` : `Alla ${items.length} tokens står på planerade rutor.`, bad ? "warn" : "ok");
+}
+
 // ---------- Start ----------
 
 OBR.onReady(async () => {
@@ -272,6 +302,7 @@ OBR.onReady(async () => {
   $("#pickBtn").addEventListener("click", pickImages);
   $("#placeBtn").addEventListener("click", place);
   $("#removeBtn").addEventListener("click", removePlaced);
+  $("#verifyBtn").addEventListener("click", verify);
   await loadTokenMap();
   OBR.room.onMetadataChange((m) => { tokenMap = m[TOKENS_KEY] || {}; renderTokenStatus(); });
   const ready = await OBR.scene.isReady();

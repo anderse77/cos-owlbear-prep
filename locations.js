@@ -4,13 +4,14 @@
 // översatt till Beneos-kartan som är vriden 90 grader jämfört med boken.
 
 // Statblock i Tabletop Almanac. "slug" är exakt det Grimoire använder.
-// fallback används bara om Tabletop Almanac inte svarar (t.ex. egna, privata statblock).
+// stats = värden hämtade från Tabletop Almanac (2026-09-27) och inbyggda, eftersom TA:s API inte tillåter
+// anrop från andra webbplatser. Grimoire läser själv in hela statblocket via "slug".
 export const MONSTERS = {
-  "Ghoul": { slug: "ghoul-wotcsrd", size: 1, fallback: { hp: 22, ac: 12, init: 2 } },
-  "Ghast": { slug: "ghast-wotcsrd", size: 1, fallback: { hp: 36, ac: 13, init: 3 } },
-  "Shadow": { slug: "shadow-wotcsrd", size: 1, fallback: { hp: 27, ac: 12, init: 2 } },
-  "Mimic": { slug: "mimic-wotcsrd", size: 1, fallback: { hp: 58, ac: 12, init: 3 } },
-  "Shambling Mound": { slug: "shamblingmound-wotcsrd", size: 2, fallback: { hp: 110, ac: 15, init: -1 } },
+  "Ghoul": { slug: "ghoul-wotcsrd", size: 1, stats: { hp: 22, ac: 12, init: 2, limits: [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}] } },
+  "Ghast": { slug: "ghast-wotcsrd", size: 1, stats: { hp: 36, ac: 13, init: 3, limits: [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}] } },
+  "Shadow": { slug: "shadow-wotcsrd", size: 1, stats: { hp: 27, ac: 12, init: 2, limits: [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": null}] } },
+  "Mimic": { slug: "mimic-wotcsrd", size: 1, stats: { hp: 58, ac: 12, init: 3, limits: [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": null}] } },
+  "Shambling Mound": { slug: "shamblingmound-wotcsrd", size: 2, stats: { hp: 110, ac: 15, init: -1, limits: [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Multiattack", "max": 3, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Multiattack", "max": 3, "used": 0, "resets": ["Round"], "formula": null}] } },
 };
 
 export const LOCATIONS = [
