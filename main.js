@@ -1,5 +1,6 @@
 import OBR, { buildImage } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
 import { MONSTERS, LOCATIONS } from "./locations.js";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -256,6 +257,33 @@ async function removePlaced() {
 }
 let confirmRemove = false;
 
+// Synkar spelarnas tokens i Grimoire med de senaste värdena (samma sak som Grimoires "håll inne för att synka").
+async function syncPlayers() {
+  const items = await OBR.scene.items.getItems((i) => i.metadata?.[GMG_KEY]?.sheet in PLAYERS);
+  if (!items.length) { log("Inga spelartokens kopplade till kända statblock i scenen.", "warn"); return; }
+  await OBR.scene.items.updateItems(items.map((i) => i.id), (list) => {
+    list.forEach((i) => {
+      const g = i.metadata[GMG_KEY];
+      const p = PLAYERS[g.sheet];
+      const seen = new Set();
+      const limits = p.limits.filter((l) => !seen.has(l.id) && seen.add(l.id)).map((l) => {
+        const cur = g.stats?.limits?.find((c) => c.id === l.id);
+        return { ...l, used: cur ? Math.min(cur.used, l.max) : 0 };
+      });
+      i.metadata[GMG_KEY] = {
+        ...g,
+        maxHp: p.hp,
+        hp: g.hp === g.maxHp ? p.hp : Math.min(g.hp, p.hp),
+        armorClass: p.ac,
+        stats: { ...g.stats, initiativeBonus: p.init, initial: false, limits },
+      };
+    });
+  });
+  const after = await OBR.scene.items.getItems(items.map((i) => i.id));
+  after.forEach((i) => { const g = i.metadata[GMG_KEY]; log(`Synkad: ${i.name} – HP ${g.hp}/${g.maxHp}, AC ${g.armorClass}, init +${g.stats.initiativeBonus}`, "ok"); });
+  log(`Spelarvärden från ${PLAYERS_UPDATED}. Stäng och öppna Grimoire-bladet för att se ändringen.`);
+}
+
 // Visar spelarnas tokens: vilket statblock de är kopplade till, HP och vilka tillägg som sparat data på dem.
 async function showPlayers() {
   const items = await OBR.scene.items.getItems((i) => i.layer === "CHARACTER" && !i.metadata?.[PLACED_KEY]);
@@ -322,6 +350,7 @@ OBR.onReady(async () => {
   $("#removeBtn").addEventListener("click", removePlaced);
   $("#verifyBtn").addEventListener("click", verify);
   $("#playersBtn").addEventListener("click", showPlayers);
+  $("#syncBtn").addEventListener("click", syncPlayers);
   await loadTokenMap();
   OBR.room.onMetadataChange((m) => { tokenMap = m[TOKENS_KEY] || {}; renderTokenStatus(); });
   const ready = await OBR.scene.isReady();
