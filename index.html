@@ -24,6 +24,7 @@
     .row2 input { width: 100%; box-sizing: border-box; padding: 8px; border-radius: 8px; background: #2a2b3a; color: var(--fg); border: 1px solid var(--line); }
     .result { margin: 6px 0; font-size: 13px; }
     .result:empty { display: none; }
+    summary { cursor: pointer; padding: 8px 14px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); border-top: 1px solid var(--line); }
     #log { padding: 6px 14px 0; font-size: 12px; max-height: 120px; overflow: auto; }
     .msg { padding: 4px 0; border-bottom: 1px dashed var(--line); }
     .msg.ok { color: var(--ok); } .msg.warn { color: var(--warn); }
@@ -31,14 +32,28 @@
 </head>
 <body>
   <div id="log"></div>
-  <section>
-    <h2>1. Monsterbilder</h2>
-    <div class="small">Saknas en bild frågar tillägget efter den när monstret placeras (sökningen är förifylld).</div>
-    <ul id="tokens"></ul>
-    <button id="pickBtn" class="secondary">Välj monsterbilder</button>
-  </section>
-  <section>
-    <h2>2. Plats</h2>
+  <details open><summary>Resa i Barovia</summary><section>
+    <div class="row2"><select id="tripFrom"></select><select id="tripTo"></select></div>
+    <div id="tripInfo" class="small"></div>
+    <div class="row2">
+      <select id="encWhere"><option value="road">På väg (18+)</option><option value="wild">Vildmark (15+)</option></select>
+      <select id="encTime"><option value="day">Dag</option><option value="night">Natt</option></select>
+    </div>
+    <button id="tripRollBtn">Slå hela resan</button>
+    <button id="partyBtn" class="secondary">Flytta sällskapet till Till-platsen</button>
+    <div class="row2"><select id="revealMiles"><option value="0.25">1/4 mile</option><option value="0.5" selected>1/2 mile</option><option value="1">1 mile</option></select><button id="revealBtn" class="secondary" style="margin:0">Avslöja runt sällskapet</button></div>
+  </section></details>
+  <details open><summary>Slumpmöten</summary><section>
+    <button id="encCheckBtn">Slå för möte (var 30:e minut)</button>
+    <button id="encTableBtn" class="secondary">Slå direkt på tabellen</button>
+    <button id="houseBtn" class="secondary">Slå husets invånare (byn)</button>
+    <div id="encResult" class="result"></div>
+    <button id="encPlaceBtn" disabled>Placera dolda vid skärmens mitt</button>
+    <button id="encRemoveBtn" class="secondary">Ta bort senaste placeringen</button>
+    <div class="row2"><select id="freeMonster"></select><input id="freeCount" type="number" min="1" max="30" value="1" /></div>
+    <button id="freeBtn" class="secondary">Placera valfritt monster vid skärmens mitt</button>
+  </section></details>
+  <details><summary>Platser (fasta monster)</summary><section>
     <select id="location"></select>
     <div id="groups"></div>
     <div id="placedInfo" class="small"></div>
@@ -46,36 +61,17 @@
     <label><input type="checkbox" id="force" /> Placera ändå om kartans namn inte matchar</label>
     <button id="verifyBtn" class="secondary">Kontrollera placering</button>
     <button id="removeBtn" class="secondary">Ta bort platsens monster</button>
-  </section>
-  <section>
-    <h2>3. Slumpmöten (Barovia)</h2>
-    <div class="row2">
-      <select id="encWhere"><option value="road">På väg (18+)</option><option value="wild">Vildmark (15+)</option></select>
-      <select id="encTime"><option value="day">Dag</option><option value="night">Natt</option></select>
-    </div>
-    <button id="encCheckBtn">Slå för möte (var 30:e minut)</button>
-    <button id="encTableBtn" class="secondary">Slå direkt på tabellen</button>
-    <button id="houseBtn" class="secondary">Slå husets invånare (byn)</button>
-    <div id="encResult" class="result"></div>
-    <button id="encPlaceBtn" disabled>Placera dolda vid skärmens mitt</button>
-    <button id="encRemoveBtn" class="secondary">Ta bort senaste placeringen</button>
-    <h2>Resa i Barovia</h2>
-    <div class="row2"><select id="tripFrom"></select><select id="tripTo"></select></div>
-    <div id="tripInfo" class="small"></div>
-    <button id="tripRollBtn">Slå hela resan</button>
-    <button id="partyBtn" class="secondary">Flytta sällskapet till Till-platsen (översiktskartan)</button>
-    <div class="row2"><select id="revealMiles"><option value="0.25">1/4 mile</option><option value="0.5" selected>1/2 mile</option><option value="1">1 mile</option></select><button id="revealBtn" class="secondary" style="margin:0">Avslöja runt sällskapet</button></div>
-    <button id="fogDumpBtn" class="secondary">Visa dimformer (felsökning)</button>
-    <h2>Valfritt monster</h2>
-    <div class="row2"><select id="freeMonster"></select><input id="freeCount" type="number" min="1" max="30" value="1" /></div>
-    <button id="freeBtn" class="secondary">Placera dolda vid skärmens mitt</button>
-  </section>
-  <section>
-    <h2>4. Spelare</h2>
+  </section></details>
+  <details><summary>Spelare</summary><section>
     <button id="syncBtn">Synka spelare</button>
     <button id="playersBtn" class="secondary">Visa spelarnas koppling</button>
-  </section>
-  <div class="small pad">CoS Prep v1.2.0</div>
-  <script type="module" src="./main.js?v=120"></script>
+  </section></details>
+  <details><summary>Monsterbilder</summary><section>
+    <ul id="tokens"></ul>
+    <button id="pickBtn" class="secondary">Välj monsterbilder</button>
+    <button id="fogDumpBtn" class="secondary">Visa dimformer (felsökning)</button>
+  </section></details>
+  <div class="small pad">CoS Prep v1.2.1</div>
+  <script type="module" src="./main.js?v=121"></script>
 </body>
 </html>
