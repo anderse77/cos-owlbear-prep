@@ -20,6 +20,10 @@
     .note { color: var(--muted); font-size: 12px; }
     .small { color: var(--muted); font-size: 12px; }
     label { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .row2 input { width: 100%; box-sizing: border-box; padding: 8px; border-radius: 8px; background: #2a2b3a; color: var(--fg); border: 1px solid var(--line); }
+    .result { margin: 6px 0; font-size: 13px; }
+    .result:empty { display: none; }
     #log { padding: 6px 14px 0; font-size: 12px; max-height: 120px; overflow: auto; }
     .msg { padding: 4px 0; border-bottom: 1px dashed var(--line); }
     .msg.ok { color: var(--ok); } .msg.warn { color: var(--warn); }
@@ -29,7 +33,7 @@
   <div id="log"></div>
   <section>
     <h2>1. Monsterbilder</h2>
-    <div class="small">Välj monstrens bilder från dina assets (en gång). Bilderna måste heta exakt som monstret.</div>
+    <div class="small">Saknas en bild frågar tillägget efter den när monstret placeras (sökningen är förifylld).</div>
     <ul id="tokens"></ul>
     <button id="pickBtn" class="secondary">Välj monsterbilder</button>
   </section>
@@ -44,11 +48,27 @@
     <button id="removeBtn" class="secondary">Ta bort platsens monster</button>
   </section>
   <section>
-    <h2>3. Spelare</h2>
+    <h2>3. Slumpmöten (Barovia)</h2>
+    <div class="row2">
+      <select id="encWhere"><option value="road">På väg (18+)</option><option value="wild">Vildmark (15+)</option></select>
+      <select id="encTime"><option value="day">Dag</option><option value="night">Natt</option></select>
+    </div>
+    <button id="encCheckBtn">Slå för möte (var 30:e minut)</button>
+    <button id="encTableBtn" class="secondary">Slå direkt på tabellen</button>
+    <button id="houseBtn" class="secondary">Slå husets invånare (byn)</button>
+    <div id="encResult" class="result"></div>
+    <button id="encPlaceBtn" disabled>Placera dolda vid skärmens mitt</button>
+    <button id="encRemoveBtn" class="secondary">Ta bort senaste placeringen</button>
+    <h2>Valfritt monster</h2>
+    <div class="row2"><select id="freeMonster"></select><input id="freeCount" type="number" min="1" max="30" value="1" /></div>
+    <button id="freeBtn" class="secondary">Placera dolda vid skärmens mitt</button>
+  </section>
+  <section>
+    <h2>4. Spelare</h2>
     <button id="syncBtn">Synka spelare</button>
     <button id="playersBtn" class="secondary">Visa spelarnas koppling</button>
   </section>
-  <div class="small pad">CoS Prep v1.0.7</div>
-  <script type="module" src="./main.js?v=107"></script>
+  <div class="small pad">CoS Prep v1.1.0</div>
+  <script type="module" src="./main.js?v=110"></script>
 </body>
 </html>

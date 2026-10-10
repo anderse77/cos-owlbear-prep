@@ -1,6 +1,7 @@
 import OBR, { buildImage } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=110";
 import { PLAYERS, PLAYERS_UPDATED } from "./players.js";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=110";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -97,6 +98,8 @@ function renderTokenStatus() {
     li.innerHTML = `<span class="${ok ? "ok" : "missing"}">${ok ? "✓" : "–"}</span> ${name}`;
     ul.appendChild(li);
   });
+  const sel = $("#freeMonster");
+  if (sel && !sel.options.length) Object.keys(MONSTERS).sort().forEach((n) => { const o = document.createElement("option"); o.value = n; o.textContent = n; sel.appendChild(o); });
 }
 
 async function pickImages() {
@@ -125,6 +128,31 @@ async function pickImages() {
   if (unknown.length) log(`Okända namn (hoppades över): ${unknown.join(", ")}. Bilden måste heta exakt som monstret.`, "warn");
 }
 
+// Saknas bild för ett monster: öppna bildväljaren med monstrets namn ifyllt och spara valet.
+async function ensureImage(name) {
+  if (tokenMap[name]) return true;
+  log(`Välj en bild för "${name}" (sökningen är förifylld).`);
+  let picked;
+  try {
+    picked = await OBR.assets.downloadImages(false, name, "CHARACTER");
+  } catch (e) {
+    log(`Bildväljaren gav fel för ${name}: ` + (e?.message || JSON.stringify(e)), "warn");
+    return false;
+  }
+  if (!picked || !picked.length) { log(`Ingen bild vald för ${name}.`, "warn"); return false; }
+  const p = picked[0];
+  tokenMap[name] = { image: p.image, grid: p.grid, scale: p.scale || { x: 1, y: 1 } };
+  await OBR.room.setMetadata({ [TOKENS_KEY]: tokenMap });
+  renderTokenStatus();
+  log(`Bild kopplad: ${name} → "${p.name}".`, "ok");
+  return true;
+}
+
+async function ensureImages(names) {
+  for (const n of names) if (!(await ensureImage(n))) return false;
+  return true;
+}
+
 // ---------- Karta och koordinater ----------
 
 async function findMap() {
@@ -138,8 +166,9 @@ async function cellToScene(map, loc, cell, size) {
   const sceneDpi = await OBR.scene.grid.getDpi();
   const kx = (sceneDpi / map.grid.dpi) * map.scale.x;
   const ky = (sceneDpi / map.grid.dpi) * map.scale.y;
-  const px = (cell[0] + size / 2) * loc.map.cell;
-  const py = (cell[1] + size / 2) * loc.map.cell;
+  const [ox, oy] = loc.map.origin || [0, 0];
+  const px = ox + (cell[0] + size / 2) * loc.map.cell;
+  const py = oy + (cell[1] + size / 2) * loc.map.cell;
   return {
     x: map.position.x + (px - map.grid.offset.x) * kx,
     y: map.position.y + (py - map.grid.offset.y) * ky,
@@ -185,11 +214,7 @@ async function place() {
       log(`Det finns redan ${existing.length} monster från "${loc.title}". Ta bort dem först för att undvika dubbletter.`, "warn");
       return;
     }
-    const missing = [...new Set(loc.groups.map((g) => g.monster))].filter((m) => !tokenMap[m]);
-    if (missing.length) {
-      log(`Saknar bild för: ${missing.join(", ")}. Klicka "Välj monsterbilder" först.`, "warn");
-      return;
-    }
+    if (!(await ensureImages([...new Set(loc.groups.map((g) => g.monster))]))) return;
     const map = await findMap();
     if (!map) { log("Hittar ingen karta i scenen.", "warn"); return; }
     if (map.rotation) { log("Kartan är roterad – stöds inte. Sätt rotationen till 0.", "warn"); return; }
@@ -312,7 +337,8 @@ async function verify() {
     const size = e?.size || 1;
     const px = (i.position.x - map.position.x) / kx + map.grid.offset.x;
     const py = (i.position.y - map.position.y) / ky + map.grid.offset.y;
-    const col = px / loc.map.cell - size / 2, row = py / loc.map.cell - size / 2;
+    const [ox, oy] = loc.map.origin || [0, 0];
+    const col = (px - ox) / loc.map.cell - size / 2, row = (py - oy) / loc.map.cell - size / 2;
     const ok = e && Math.abs(col - e.cell[0]) < 0.25 && Math.abs(row - e.cell[1]) < 0.25;
     if (!ok) bad++;
     const g = i.metadata?.[GMG_KEY];
@@ -327,6 +353,119 @@ async function verify() {
   } catch (e) { log("Kunde inte visa: " + e.message, "warn"); }
   log(`Karta: ${map.name} ${map.image.width}×${map.image.height}, dpi ${map.grid.dpi}, skala ${map.scale.x}×${map.scale.y}.`);
   log(bad ? `${bad} token(s) avviker från planen.` : `Alla ${items.length} tokens står på planerade rutor.`, bad ? "warn" : "ok");
+}
+
+
+// ---------- Tärningar ----------
+
+function roll(expr) {
+  const m = String(expr).replace(/\s|−/g, (c) => (c === "−" ? "-" : "")).match(/^(\d*)d(\d+)([+-]\d+)?$|^(\d+)$/);
+  if (!m) return 1;
+  if (m[4]) return +m[4];
+  const n = +(m[1] || 1), sides = +m[2], mod = +(m[3] || 0);
+  let t = 0;
+  for (let i = 0; i < n; i++) t += 1 + Math.floor(Math.random() * sides);
+  return Math.max(0, t + mod);
+}
+const d = (sides) => 1 + Math.floor(Math.random() * sides);
+
+// ---------- Placera grupper vid skärmens mitt (slumpmöten, hus, valfritt monster) ----------
+
+let lastGroup = null; // { creatures: [[namn, antal]], label }
+
+async function placeAtView(creatures, label) {
+  const list = creatures.filter(([, n]) => n > 0);
+  if (!list.length) { log("Inga varelser att placera."); return; }
+  if (!(await ensureImages(list.map(([n]) => n)))) return;
+  const dpi = await OBR.scene.grid.getDpi();
+  const w = await OBR.viewport.getWidth(), h = await OBR.viewport.getHeight();
+  const c = await OBR.viewport.inverseTransformPoint({ x: w / 2, y: h / 2 });
+  const groupId = `encounter-${Date.now()}`;
+  const items = [];
+  let col = 0, row = 0, rowH = 1;
+  const perRow = 6;
+  for (const [name, count] of list) {
+    const m = MONSTERS[name];
+    const t = tokenMap[name];
+    const gmg = await gmgMetadata(name);
+    for (let i = 1; i <= count; i++) {
+      if (col + m.size > perRow) { col = 0; row += rowH; rowH = 1; }
+      const pos = await OBR.scene.grid.snapPosition({ x: c.x + (col - perRow / 2 + m.size / 2) * dpi, y: c.y + (row + m.size / 2) * dpi }, 1, m.size % 2 === 0, m.size % 2 === 1);
+      items.push(buildImage(t.image, t.grid)
+        .name(count > 1 ? `${name} ${i}` : name)
+        .position(pos)
+        .scale({ x: (t.scale?.x || 1) * m.size, y: (t.scale?.y || 1) * m.size })
+        .layer("CHARACTER").visible(false).locked(false)
+        .metadata({ [PLACED_KEY]: { location: groupId, area: label }, [GMG_KEY]: structuredClone(gmg.data) })
+        .build());
+      col += m.size; rowH = Math.max(rowH, m.size);
+    }
+  }
+  await OBR.scene.items.addItems(items);
+  lastPlaced = groupId;
+  await OBR.player.select(items.map((i) => i.id));
+  log(`Placerade ${items.length} dolda tokens (${label}) mitt på skärmen. Flytta dem dit de ska och gör dem synliga när mötet börjar.`, "ok");
+}
+let lastPlaced = null;
+
+async function removeLastPlaced() {
+  if (!lastPlaced) { log("Inget placerat från slumpmöten i den här sessionen."); return; }
+  const items = await placedItems(lastPlaced);
+  await OBR.scene.items.deleteItems(items.map((i) => i.id));
+  log(`Tog bort ${items.length} tokens från senaste placeringen.`, "ok");
+  lastPlaced = null;
+}
+
+function showResult(title, text, creatures, extraLines = []) {
+  const box = $("#encResult");
+  const lines = creatures.filter(([, n]) => n > 0).map(([n, c]) => `${c} × ${n}`);
+  box.innerHTML = `<b>${title}</b><div class="note">${text}</div>` + (lines.length || extraLines.length ? `<div>${[...lines, ...extraLines].join("<br>")}</div>` : "");
+  lastGroup = { creatures, label: title };
+  $("#encPlaceBtn").disabled = !creatures.some(([, n]) => n > 0);
+}
+
+function rollTable() {
+  const night = $("#encTime").value === "night";
+  const r = d(12) + d(8);
+  const e = (night ? NIGHT : DAY)[r];
+  let creatures = (e.creatures || []).map(([n, ex]) => [n, roll(ex)]);
+  const extra = [];
+  if (e.split) {
+    const pick = d(2) === 1 ? e.split[0] : e.split[1];
+    creatures = [[pick[0], roll(pick[1])]];
+    extra.push(`Slog 50 %: ${pick[0]}`);
+  }
+  if (e.d6) extra.push(`d6 = ${d(6)}`);
+  log(`Slumpmöte (${night ? "natt" : "dag"}): d12+d8 = ${r} → ${e.title}`, "ok");
+  showResult(`${night ? "Natt" : "Dag"} ${r}: ${e.title}`, e.text, creatures, extra);
+}
+
+function checkEncounter() {
+  const road = $("#encWhere").value === "road";
+  const need = road ? ENCOUNTER_RULES.road : ENCOUNTER_RULES.wilderness;
+  const r = d(20);
+  if (r < need) {
+    log(`Möteskontroll (${road ? "väg" : "vildmark"}): d20 = ${r}, behövde ${need}+ → inget möte.`);
+    showResult(`Inget möte (d20 = ${r})`, `Slå igen efter ${ENCOUNTER_RULES.everyMinutes} minuter i spelet. ${ENCOUNTER_RULES.note}`, []);
+    return;
+  }
+  log(`Möteskontroll: d20 = ${r} → möte!`, "ok");
+  rollTable();
+}
+
+function rollHouse() {
+  const r = d(20);
+  const e = HOUSES.find((h) => r >= h.min && r <= h.max);
+  const creatures = (e.creatures || []).map(([n, ex]) => [n, roll(ex)]);
+  const extra = e.extra ? [`${roll(e.extra[1])} × ${e.extra[0]}`] : [];
+  log(`Husets invånare: d20 = ${r} → ${e.title}`, "ok");
+  showResult(`Hus, d20 = ${r}: ${e.title}`, e.text, creatures, extra);
+}
+
+function freeMonster() {
+  const name = $("#freeMonster").value;
+  const n = Math.max(1, Math.min(30, parseInt($("#freeCount").value, 10) || 1));
+  placeAtView([[name, n]], `${n} × ${name}`);
 }
 
 // ---------- Start ----------
@@ -351,6 +490,12 @@ OBR.onReady(async () => {
   $("#verifyBtn").addEventListener("click", verify);
   $("#playersBtn").addEventListener("click", showPlayers);
   $("#syncBtn").addEventListener("click", syncPlayers);
+  $("#encCheckBtn").addEventListener("click", checkEncounter);
+  $("#encTableBtn").addEventListener("click", rollTable);
+  $("#houseBtn").addEventListener("click", rollHouse);
+  $("#encPlaceBtn").addEventListener("click", () => lastGroup && placeAtView(lastGroup.creatures, lastGroup.label));
+  $("#encRemoveBtn").addEventListener("click", removeLastPlaced);
+  $("#freeBtn").addEventListener("click", freeMonster);
   await loadTokenMap();
   OBR.room.onMetadataChange((m) => { tokenMap = m[TOKENS_KEY] || {}; renderTokenStatus(); });
   const ready = await OBR.scene.isReady();

@@ -12,8 +12,35 @@ export const MONSTERS = {
   "Shadow": { slug: "shadow-wotcsrd", size: 1, stats: { hp: 27, ac: 12, init: 2, limits: [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": null}] } },
   "Mimic": { slug: "mimic-wotcsrd", size: 1, stats: { hp: 58, ac: 12, init: 3, limits: [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": null}] } },
   "Shambling Mound": { slug: "shamblingmound-wotcsrd", size: 2, stats: { hp: 110, ac: 15, init: -1, limits: [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Multiattack", "max": 3, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Multiattack", "max": 3, "used": 0, "resets": ["Round"], "formula": null}] } },
+  // --- Barovia: byn och vägarna (kapitel 2 och 3). 2024-statblock från TA (hämtade 2026-10-10). ---
+  // custom: true = eget statblock i TA med bokens 2014-värden (ingen 2024-version finns).
+  "Commoner": { slug: "commoner-wotcsrd", size: 1, stats: {"hp":4,"ac":10,"init":0,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Scout": { slug: "scout-wotcsrd", size: 1, stats: {"hp":16,"ac":13,"init":2,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  "Bandit": { slug: "bandit-wotcsrd", size: 1, stats: {"hp":11,"ac":12,"init":1,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Swarm of Ravens": { slug: "swarmofravens-wotcsrd", size: 1, stats: {"hp":11,"ac":12,"init":2,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":"1d6>5"},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Dire Wolf": { slug: "direwolf-wotcsrd", size: 2, stats: {"hp":22,"ac":14,"init":2,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Wolf": { slug: "wolf-wotcsrd", size: 1, stats: {"hp":11,"ac":12,"init":2,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Berserker": { slug: "berserker-wotcsrd", size: 1, stats: {"hp":67,"ac":13,"init":1,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Werewolf": { slug: "werewolf-wotcsrd", size: 1, stats: {"hp":71,"ac":15,"init":4,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Bonus","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  "Druid": { slug: "druid-wotcsrd", size: 1, stats: {"hp":44,"ac":13,"init":1,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  "Ghost": { slug: "ghost-wotcsrd", size: 1, stats: {"hp":45,"ac":11,"init":1,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":"1d6>5"},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  "Swarm of Bats": { slug: "swarmofbats-wotcsrd", size: 2, stats: {"hp":11,"ac":12,"init":2,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Zombie": { slug: "zombie-wotcsrd", size: 1, stats: {"hp":15,"ac":8,"init":-2,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Will-o'-Wisp": { slug: "willowisp-wotcsrd", size: 1, stats: {"hp":27,"ac":19,"init":9,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Bonus","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Bonus","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Skeleton": { slug: "skeleton-wotcsrd", size: 1, stats: {"hp":13,"ac":14,"init":3,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Warhorse Skeleton": { slug: "warhorseskeleton-wotcsrd", size: 2, stats: {"hp":22,"ac":13,"init":1,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Swarm of Rats": { slug: "swarmofrats-wotcsrd", size: 1, stats: {"hp":14,"ac":10,"init":0,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Vampire Spawn": { slug: "vampirespawn-wotcsrd", size: 1, stats: {"hp":90,"ac":16,"init":3,"limits":[{"id":"Multiattack","max":3,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":3,"used":0,"resets":["Round"],"formula":null},{"id":"Bonus","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":3,"used":0,"resets":["Round"],"formula":null}]} },
+  "Night Hag": { slug: "nighthag-wotcsrd", size: 1, stats: {"hp":112,"ac":17,"init":5,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Nightmare Haunting","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Bonus","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  "Strahd Zombie": { slug: "strahdzombie-anderse77", size: 1, custom: true, stats: {"hp":30,"ac":8,"init":-2,"limits":[{"id":"Multiattack","max":3,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":3,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":3,"used":0,"resets":["Round"],"formula":null}]} },
+  "Twig Blight": { slug: "twigblight-anderse77", size: 1, custom: true, stats: {"hp":4,"ac":13,"init":1,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Needle Blight": { slug: "needleblight-anderse77", size: 1, custom: true, stats: {"hp":11,"ac":12,"init":1,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Scarecrow": { slug: "scarecrow-anderse77", size: 1, custom: true, stats: {"hp":36,"ac":11,"init":1,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  "Revenant": { slug: "revenant-anderse77", size: 1, custom: true, stats: {"hp":136,"ac":13,"init":2,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  "Wereraven": { slug: "wereraven-anderse77", size: 1, custom: true, stats: {"hp":31,"ac":12,"init":2,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
 };
 
+// map.origin = första rutlinjen i pixlar [x, y] när rutnätet inte börjar i hörnet.
 export const LOCATIONS = [
   {
     id: "deathhouse-b1",
@@ -72,6 +99,20 @@ export const LOCATIONS = [
         note: "Skräphögen i grottalkoven är Lorghoth. Sover tills den attackeras eller ritualen vägras.",
         monster: "Shambling Mound",
         tokens: [{ name: "Lorghoth (Shambling Mound)", cell: [24, 6] }],
+      },
+    ],
+  },
+  {
+    id: "barovia-church-undercroft",
+    title: "Barovia – kyrkans källare (E5g)",
+    mapHint: "DORU",
+    map: { width: 3840, height: 2160, cell: 107, origin: [57, 2] },
+    groups: [
+      {
+        area: "E5g Kyrkans källare",
+        note: "Doru, Donavichs son (vampire spawn), i bortre hörnet från trappan. Svältande; anfaller en ensam karaktär, undviker en samlad grupp men anfaller om han blir instängd.",
+        monster: "Vampire Spawn",
+        tokens: [{ name: "Doru (Vampire Spawn)", cell: [11, 6] }],
       },
     ],
   },
