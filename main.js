@@ -1,7 +1,8 @@
-import OBR, { buildImage } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=110";
+import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=120";
 import { PLAYERS, PLAYERS_UPDATED } from "./players.js";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=110";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=120";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW } from "./explore.js?v=120";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -469,6 +470,120 @@ function freeMonster() {
   placeAtView([[name, n]], `${n} × ${name}`);
 }
 
+
+// ---------- Resa och utforskning ----------
+
+const PARTY_KEY = `${ID}/party`;
+
+function fillPlaces() {
+  for (const id of ["#tripFrom", "#tripTo"]) {
+    const sel = $(id);
+    PLACES.forEach((p) => { const o = document.createElement("option"); o.value = p.id; o.textContent = p.name; sel.appendChild(o); });
+  }
+  $("#tripFrom").value = "E"; $("#tripTo").value = "F";
+  showTrip();
+}
+
+function showTrip() {
+  const t = travel($("#tripFrom").value, $("#tripTo").value);
+  $("#tripInfo").textContent = `Fågelväg ${t.crow.toFixed(1)} mi, längs vägen ca ${t.road.toFixed(1)} mi ≈ ${Math.round(t.minutes / 10) * 10} min till fots → ${t.checks} mötesslag (var 30:e minut). Ungefärligt.`;
+}
+
+let tripEncounters = [];
+
+function rollTrip() {
+  const t = travel($("#tripFrom").value, $("#tripTo").value);
+  const road = $("#encWhere").value === "road";
+  const need = road ? ENCOUNTER_RULES.road : ENCOUNTER_RULES.wilderness;
+  const night = $("#encTime").value === "night";
+  const lines = [];
+  tripEncounters = [];
+  for (let i = 1; i <= t.checks; i++) {
+    const r = d(20);
+    if (tripEncounters.length >= 2) { lines.push(`${i * 30} min: (redan två möten – inget slag enligt boken)`); continue; }
+    if (r < need) { lines.push(`${i * 30} min: d20 ${r} – inget`); continue; }
+    const tr = d(12) + d(8);
+    const e = (night ? NIGHT : DAY)[tr];
+    let creatures = (e.creatures || []).map(([n, ex]) => [n, roll(ex)]);
+    if (e.split) { const pick = d(2) === 1 ? e.split[0] : e.split[1]; creatures = [[pick[0], roll(pick[1])]]; }
+    tripEncounters.push({ title: e.title, text: e.text, creatures, at: i * 30 });
+    lines.push(`<b>${i * 30} min: d20 ${r} → MÖTE: ${e.title}</b> (${creatures.filter(([, n]) => n).map(([n, c]) => `${c} × ${n}`).join(", ") || "inga varelser"})`);
+  }
+  const box = $("#encResult");
+  box.innerHTML = `<b>Resa ${$("#tripFrom").value} → ${$("#tripTo").value} (${night ? "natt" : "dag"}, ${road ? "väg" : "vildmark"})</b><div>${lines.join("<br>")}</div>` +
+    tripEncounters.map((m, k) => `<div class="note">Möte ${k + 1}: ${m.text}</div>`).join("");
+  if (tripEncounters.length) { lastGroup = { creatures: tripEncounters[0].creatures, label: tripEncounters[0].title }; $("#encPlaceBtn").disabled = !tripEncounters[0].creatures.some(([, n]) => n); }
+  else { lastGroup = null; $("#encPlaceBtn").disabled = true; }
+  log(`Resa ${$("#tripFrom").value}→${$("#tripTo").value}: ${t.checks} slag, ${tripEncounters.length} möte(n).${tripEncounters.length > 1 ? " Placera-knappen tar möte 1; slå om möte 2 när det inträffar eller använd Valfritt monster." : ""}`, "ok");
+}
+
+async function overviewMap() {
+  const maps = await OBR.scene.items.getItems((i) => i.layer === "MAP" && i.type === "IMAGE");
+  const m = maps.find((x) => (x.name || "").toUpperCase().includes(OVERVIEW.hint)) ||
+    maps.find((x) => x.image.width === OVERVIEW.width && x.image.height === OVERVIEW.height && /BAROVIA/i.test(x.name || ""));
+  if (!m) { log('Öppna scenen "00 Barovia – hela dalen" först.', "warn"); return null; }
+  return m;
+}
+
+async function overviewToScene(map, [px, py]) {
+  const dpi = await OBR.scene.grid.getDpi();
+  const kx = (dpi / map.grid.dpi) * map.scale.x, ky = (dpi / map.grid.dpi) * map.scale.y;
+  return { pos: { x: map.position.x + (px - map.grid.offset.x) * kx, y: map.position.y + (py - map.grid.offset.y) * ky }, k: (kx + ky) / 2 };
+}
+
+async function moveParty() {
+  const map = await overviewMap(); if (!map) return;
+  const place = PLACES.find((p) => p.id === $("#tripTo").value);
+  const { pos } = await overviewToScene(map, bookToOverview(place.book));
+  const existing = await OBR.scene.items.getItems((i) => i.metadata?.[PARTY_KEY]);
+  if (existing.length) {
+    await OBR.scene.items.updateItems(existing.map((i) => i.id), (list) => list.forEach((i) => { i.position = pos; }));
+    log(`Gruppmarkören flyttad till ${place.name}.`, "ok");
+  } else {
+    const label = buildLabel().plainText("Sällskapet").backgroundColor("#8b1a1a").fontSize(24).position(pos).layer("TEXT").locked(false).visible(true)
+      .metadata({ [PARTY_KEY]: true }).build();
+    await OBR.scene.items.addItems([label]);
+    log(`Gruppmarkör ("Sällskapet") placerad vid ${place.name}. Dra den fritt; knappen flyttar den till Till-platsen.`, "ok");
+  }
+  $("#tripFrom").value = place.id; showTrip();
+}
+
+// Avslöja: kopierar en dimform som du själv har skurit ("Cut") och lägger en ny cirkel runt markören.
+async function revealAroundParty() {
+  const map = await overviewMap(); if (!map) return;
+  const party = (await OBR.scene.items.getItems((i) => i.metadata?.[PARTY_KEY]))[0];
+  if (!party) { log("Placera gruppmarkören först.", "warn"); return; }
+  const fog = await OBR.scene.items.getItems((i) => i.layer === "FOG" && (i.type === "SHAPE" || i.type === "PATH"));
+  const template = fog.find((i) => i.metadata?.[`${ID}/reveal`]) || fog.sort((a, b) => String(b.lastModified).localeCompare(String(a.lastModified)))[0];
+  if (!template) { log('Rita först en liten dimform och skär den ("Cut") – tillägget kopierar dess inställningar.', "warn"); return; }
+  const miles = parseFloat($("#revealMiles").value) || 0.5;
+  const { k } = await overviewToScene(map, [0, 0]);
+  const r = miles * PX_PER_MILE_OVERVIEW * k;
+  const c = party.position;
+  const copy = structuredClone(template);
+  delete copy.id; delete copy.lastModified; delete copy.lastModifiedUserId; delete copy.createdUserId; delete copy.zIndex;
+  let item;
+  if (template.type === "SHAPE") {
+    item = buildShape().shapeType("CIRCLE").width(r * 2).height(r * 2).position(c).layer("FOG").style(copy.style).build();
+  } else {
+    const n = 32, cmds = [];
+    for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; cmds.push([i ? 1 : 0, Math.cos(a) * r, Math.sin(a) * r]); }
+    cmds.push([5]);
+    item = buildPath().commands(cmds).fillRule(copy.fillRule || "nonzero").position(c).layer("FOG").style(copy.style).build();
+  }
+  const keep = { ...copy };
+  ["type", "position", "commands", "width", "height", "shapeType", "style", "fillRule", "scale", "rotation", "metadata", "name"].forEach((f) => delete keep[f]);
+  Object.assign(item, keep, { name: "Avslöjat runt sällskapet", metadata: { ...(copy.metadata || {}), [`${ID}/reveal`]: true } });
+  await OBR.scene.items.addItems([item]);
+  log(`Avslöjade en cirkel (${miles} mi) runt sällskapet, kopierad från dimformen "${template.name}". Ser det fel ut: ångra (Ctrl+Z).`, "ok");
+}
+
+async function dumpFog() {
+  const fog = await OBR.scene.items.getItems((i) => i.layer === "FOG");
+  if (!fog.length) { log("Inga dimformer i scenen."); return; }
+  fog.slice(-3).forEach((i) => { const c = { ...i }; if (c.commands) c.commands = `${c.commands.length} kommandon`; log(JSON.stringify(c).slice(0, 600)); });
+}
+
 // ---------- Start ----------
 
 OBR.onReady(async () => {
@@ -497,6 +612,13 @@ OBR.onReady(async () => {
   $("#encPlaceBtn").addEventListener("click", () => lastGroup && placeAtView(lastGroup.creatures, lastGroup.label));
   $("#encRemoveBtn").addEventListener("click", removeLastPlaced);
   $("#freeBtn").addEventListener("click", freeMonster);
+  fillPlaces();
+  $("#tripFrom").addEventListener("change", showTrip);
+  $("#tripTo").addEventListener("change", showTrip);
+  $("#tripRollBtn").addEventListener("click", rollTrip);
+  $("#partyBtn").addEventListener("click", moveParty);
+  $("#revealBtn").addEventListener("click", revealAroundParty);
+  $("#fogDumpBtn").addEventListener("click", dumpFog);
   await loadTokenMap();
   OBR.room.onMetadataChange((m) => { tokenMap = m[TOKENS_KEY] || {}; renderTokenStatus(); });
   const ready = await OBR.scene.isReady();
