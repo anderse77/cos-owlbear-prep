@@ -113,10 +113,11 @@ async function pickImages() {
   }
   if (!picked || picked.length === 0) { log("Inga bilder valdes."); return; }
   const names = Object.keys(MONSTERS);
+  const norm = (x) => String(x || "").toLowerCase().replace(/[^a-z]+/g, "");
   let matched = 0;
   const unknown = [];
   picked.forEach((p) => {
-    const name = names.find((n) => n.toLowerCase() === (p.name || "").trim().toLowerCase());
+    const name = names.find((n) => norm(n) === norm(p.name));
     if (name) {
       tokenMap[name] = { image: p.image, grid: p.grid, scale: p.scale || { x: 1, y: 1 } };
       matched++;
@@ -134,7 +135,7 @@ async function ensureImage(name) {
   log(`Välj en bild för "${name}" (sökningen är förifylld).`);
   let picked;
   try {
-    picked = await OBR.assets.downloadImages(false, name, "CHARACTER");
+    picked = await OBR.assets.downloadImages(false, name.replace(/[^A-Za-z]+/g, " ").trim(), "CHARACTER");
   } catch (e) {
     log(`Bildväljaren gav fel för ${name}: ` + (e?.message || JSON.stringify(e)), "warn");
     return false;
