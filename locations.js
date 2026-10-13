@@ -116,4 +116,72 @@ export const LOCATIONS = [
       },
     ],
   },
+  {
+    id: "barovia-blood-on-the-vine",
+    title: "Barovia – Blood on the Vine (E2)",
+    mapHint: "BLOOD",
+    map: { width: 4400, height: 4400, cell: 200 },
+    groups: [
+      {
+        area: "E2 Bardisken",
+        note: "Arik Lorensk, bartendern. Torkar glas mekaniskt, tar beställningar (vin 1 cp glaset, 1 sp kannan), ignorerar alla frågor.",
+        monster: "Commoner",
+        tokens: [{ name: "Arik (Commoner)", cell: [6, 17] }],
+      },
+      {
+        area: "E2 Bordet vid ytterdörren",
+        note: "Alenka, Mirabel och Sorvia (Vistana Spy) äger tavernan. Ser till att notan betalas, bryr sig annars inte. Kommer gruppen med andra Vistani: pratsamma och tipsar om Madam Eva.",
+        monster: "Spy",
+        tokens: [
+          { name: "Alenka (Spy)", cell: [9, 11] },
+          { name: "Mirabel (Spy)", cell: [10, 11] },
+          { name: "Sorvia (Spy)", cell: [10, 13] },
+        ],
+      },
+      {
+        area: "E2 Hörnbordet",
+        note: "Ismark Kolyanovich (Veteran) sitter ensam. Bjuder på vin och ber om hjälp att föra Ireena till Vallaki; tar dem till borgmästarens hus (E4).",
+        monster: "Warrior Veteran",
+        tokens: [{ name: "Ismark (Veteran)", cell: [16, 12] }],
+      },
+    ],
+  },
+  {
+    id: "tser-pool-camp",
+    title: "Tser Pool – vistanilägret (G)",
+    mapHint: "TSER POOL",
+    map: { width: 3840, height: 2160, cell: 80 },
+    groups: [
+      {
+        area: "G Kring elden",
+        note: "12 berusade Vistani (Vistana Bandit): nackdel på attacker och färdighetsslag. Anfaller bara om de hotas eller förolämpas; annars vin och fest.",
+        monster: "Bandit",
+        tokens: [
+          [22, 6], [23, 7], [24, 8], [25, 9], [27, 9], [28, 8], [29, 9], [21, 7], [22, 8], [24, 6], [23, 9], [28, 10],
+        ].map((cell, i) => ({ name: `Vistana ${i + 1} (Bandit)`, cell })),
+      },
+      {
+        area: "G Vagnarna",
+        note: "3 nyktra Vistani (Vistana Bandit Captain) vilar i tre av vagnarna; rusar ut om larm går.",
+        monster: "Bandit Captain",
+        tokens: [
+          { name: "Vistana-kapten 1", cell: [13, 13] },
+          { name: "Vistana-kapten 2", cell: [33, 14] },
+          { name: "Vistana-kapten 3", cell: [24, 3] },
+        ],
+      },
+      {
+        area: "G Det stora tältet",
+        note: "Madam Eva läser tarokka-korten (kapitel 1). Ger aldrig hjälp och ber aldrig om någon. Sökning i tält/vagn: slå på bokens skattabell.",
+        monster: "Madam Eva",
+        tokens: [{ name: "Madam Eva", cell: [23, 13] }],
+      },
+      {
+        area: "G Hästarna",
+        note: "8 draghästar dricker vid floden (floden syns inte på Beneos-kartan – flytta dem till kanten mot sjön). Skräms inte lätt.",
+        monster: "Draft Horse",
+        tokens: [[36, 17], [38, 17], [40, 17], [42, 17], [36, 20], [38, 20], [40, 20], [42, 20]].map((cell, i) => ({ name: `Draghäst ${i + 1}`, cell })),
+      },
+    ],
+  },
 ];
