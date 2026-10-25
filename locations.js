@@ -38,6 +38,12 @@ export const MONSTERS = {
   "Scarecrow": { slug: "scarecrow-anderse77", size: 1, custom: true, stats: {"hp":36,"ac":11,"init":1,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
   "Revenant": { slug: "revenant-anderse77", size: 1, custom: true, stats: {"hp":136,"ac":13,"init":2,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
   "Wereraven": { slug: "wereraven-anderse77", size: 1, custom: true, stats: {"hp":31,"ac":12,"init":2,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  // --- Vägen västerut (kapitel 2 och 3): E2, G. 2024-statblock från TA (hämtade 2026-10-25). ---
+  "Bandit Captain": { slug: "banditcaptain-wotcsrd", size: 1, stats: {"hp":52,"ac":15,"init":3,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null}]} },
+  "Spy": { slug: "spy-wotcsrd", size: 1, stats: {"hp":27,"ac":12,"init":4,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Bonus","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Warrior Veteran": { slug: "warriorveteran-wotcsrd", size: 1, stats: {"hp":65,"ac":17,"init":3,"limits":[{"id":"Multiattack","max":2,"used":0,"resets":["Round"],"formula":null},{"id":"Reaction","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Draft Horse": { slug: "drafthorse-wotcsrd", size: 2, stats: {"hp":15,"ac":10,"init":0,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
+  "Madam Eva": { slug: "madameva-anderse77", size: 1, custom: true, stats: {"hp":88,"ac":10,"init":0,"limits":[{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null},{"id":"Curse","max":1,"used":0,"resets":["Long Rest"],"formula":null},{"id":"Evil Eye","max":1,"used":0,"resets":["Short Rest","Long Rest"],"formula":null},{"id":"Spell slot 1","max":4,"used":0,"resets":["Long Rest"],"formula":null},{"id":"Spell slot 2","max":3,"used":0,"resets":["Long Rest"],"formula":null},{"id":"Spell slot 3","max":3,"used":0,"resets":["Long Rest"],"formula":null},{"id":"Spell slot 4","max":3,"used":0,"resets":["Long Rest"],"formula":null},{"id":"Spell slot 5","max":2,"used":0,"resets":["Long Rest"],"formula":null},{"id":"Spell slot 6","max":1,"used":0,"resets":["Long Rest"],"formula":null},{"id":"Spell slot 7","max":1,"used":0,"resets":["Long Rest"],"formula":null},{"id":"Spell slot 8","max":1,"used":0,"resets":["Long Rest"],"formula":null}]} },
 };
 
 // map.origin = första rutlinjen i pixlar [x, y] när rutnätet inte börjar i hörnet.
@@ -113,6 +119,74 @@ export const LOCATIONS = [
         note: "Doru, Donavichs son (vampire spawn), i bortre hörnet från trappan. Svältande; anfaller en ensam karaktär, undviker en samlad grupp men anfaller om han blir instängd.",
         monster: "Vampire Spawn",
         tokens: [{ name: "Doru (Vampire Spawn)", cell: [11, 6] }],
+      },
+    ],
+  },
+  {
+    id: "barovia-blood-on-the-vine",
+    title: "Barovia – Blood on the Vine (E2)",
+    mapHint: "BLOOD",
+    map: { width: 4400, height: 4400, cell: 200 },
+    groups: [
+      {
+        area: "E2 Bardisken",
+        note: "Arik Lorensk, bartendern. Torkar glas mekaniskt, tar beställningar (vin 1 cp glaset, 1 sp kannan), ignorerar alla frågor.",
+        monster: "Commoner",
+        tokens: [{ name: "Arik (Commoner)", cell: [6, 17] }],
+      },
+      {
+        area: "E2 Bordet vid ytterdörren",
+        note: "Alenka, Mirabel och Sorvia (Vistana Spy) äger tavernan. Ser till att notan betalas, bryr sig annars inte. Kommer gruppen med andra Vistani: pratsamma och tipsar om Madam Eva.",
+        monster: "Spy",
+        tokens: [
+          { name: "Alenka (Spy)", cell: [9, 11] },
+          { name: "Mirabel (Spy)", cell: [10, 11] },
+          { name: "Sorvia (Spy)", cell: [10, 13] },
+        ],
+      },
+      {
+        area: "E2 Hörnbordet",
+        note: "Ismark Kolyanovich (Veteran) sitter ensam. Bjuder på vin och ber om hjälp att föra Ireena till Vallaki; tar dem till borgmästarens hus (E4).",
+        monster: "Warrior Veteran",
+        tokens: [{ name: "Ismark (Veteran)", cell: [16, 12] }],
+      },
+    ],
+  },
+  {
+    id: "tser-pool-camp",
+    title: "Tser Pool – vistanilägret (G)",
+    mapHint: "TSER POOL",
+    map: { width: 3840, height: 2160, cell: 80 },
+    groups: [
+      {
+        area: "G Kring elden",
+        note: "12 berusade Vistani (Vistana Bandit): nackdel på attacker och färdighetsslag. Anfaller bara om de hotas eller förolämpas; annars vin och fest.",
+        monster: "Bandit",
+        tokens: [
+          [22, 6], [23, 7], [24, 8], [25, 9], [27, 9], [28, 8], [29, 9], [21, 7], [22, 8], [24, 6], [23, 9], [28, 10],
+        ].map((cell, i) => ({ name: `Vistana ${i + 1} (Bandit)`, cell })),
+      },
+      {
+        area: "G Vagnarna",
+        note: "3 nyktra Vistani (Vistana Bandit Captain) vilar i tre av vagnarna; rusar ut om larm går.",
+        monster: "Bandit Captain",
+        tokens: [
+          { name: "Vistana-kapten 1", cell: [13, 13] },
+          { name: "Vistana-kapten 2", cell: [33, 14] },
+          { name: "Vistana-kapten 3", cell: [24, 3] },
+        ],
+      },
+      {
+        area: "G Det stora tältet",
+        note: "Madam Eva läser tarokka-korten (kapitel 1). Ger aldrig hjälp och ber aldrig om någon. Sökning i tält/vagn: slå på bokens skattabell.",
+        monster: "Madam Eva",
+        tokens: [{ name: "Madam Eva", cell: [23, 13] }],
+      },
+      {
+        area: "G Hästarna",
+        note: "8 draghästar dricker vid floden (floden syns inte på Beneos-kartan – flytta dem till kanten mot sjön). Skräms inte lätt.",
+        monster: "Draft Horse",
+        tokens: [[36, 17], [38, 17], [40, 17], [42, 17], [36, 20], [38, 20], [40, 20], [42, 20]].map((cell, i) => ({ name: `Draghäst ${i + 1}`, cell })),
       },
     ],
   },

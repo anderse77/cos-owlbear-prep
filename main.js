@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=120";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=120";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW } from "./explore.js?v=120";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=130";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=130";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=130";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW } from "./explore.js?v=130";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -606,6 +606,11 @@ OBR.onReady(async () => {
   $("#verifyBtn").addEventListener("click", verify);
   $("#playersBtn").addEventListener("click", showPlayers);
   $("#syncBtn").addEventListener("click", syncPlayers);
+  $("#autoLogBtn").addEventListener("click", async () => {
+    const lines = (await OBR.scene.getMetadata())[`${ID}/autolink-log`] || [];
+    if (!lines.length) log("Inga automatiska kopplingar i den här scenen än.", "");
+    lines.slice().reverse().forEach((l) => log(l, "ok"));
+  });
   $("#encCheckBtn").addEventListener("click", checkEncounter);
   $("#encTableBtn").addEventListener("click", rollTable);
   $("#houseBtn").addEventListener("click", rollHouse);
