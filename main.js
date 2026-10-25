@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=131";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=131";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=131";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW } from "./explore.js?v=131";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=132";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=132";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=132";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW } from "./explore.js?v=132";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -600,7 +600,13 @@ async function revealAroundParty() {
 async function dumpFog() {
   const fog = await OBR.scene.items.getItems((i) => i.layer === "FOG");
   if (!fog.length) { log("Inga dimformer i scenen."); return; }
-  fog.slice(-3).forEach((i) => { const c = { ...i }; if (c.commands) c.commands = `${c.commands.length} kommandon`; log(JSON.stringify(c).slice(0, 600)); });
+  fog.slice(-3).forEach((i) => {
+    const c = { ...i };
+    if (c.commands) c.commands = `${c.commands.length} kommandon`;
+    delete c.id; delete c.createdUserId; delete c.lastModifiedUserId; delete c.lastModified; delete c.position; delete c.scale;
+    Object.entries(c).reverse().forEach(([k, v]) => log(`  ${k}: ${JSON.stringify(v)}`));
+    log(`Dimform "${i.name}" (${i.type}):`, "ok");
+  });
 }
 
 // ---------- Start ----------
