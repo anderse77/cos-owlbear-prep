@@ -79,3 +79,23 @@ dra-och-släpp fungerar inte där). Claude kan läsa tillägget, klicka på dess
 - Varje monster: rätt antal, rätt ruta (Kontrollera placering), dolt, kopplat till rätt slug, rätt HP.
 - Jämför placering mot bokens text, inte mot minnet.
 - Säg tydligt vad som inte är kontrollerat.
+
+## 7. Automatisk statblock-koppling (v1.3.0)
+
+`background.js` körs i bakgrunden (manifestets `background_url`) hos spelledaren. När en token dras in
+i en scen kopplas den automatiskt:
+- Spelare (namnet = namnet i `players.js`, t.ex. "River" eller "River2") → spelarens `-anderse77`-statblock.
+- Monster med exakt samma namn som i `MONSTERS` → rätt statblock, men bara om Grimoire inte kopplat något
+  eller kopplat en annan version av samma monster (ghoul-wotc-srd → ghoul-wotcsrd).
+Senaste kopplingarna sparas i scenens metadata och visas med "Visa automatiska kopplingar".
+Tillägget "Persistent Tokens" kan återställa gammal Grimoire-data när en token dras in; bakgrunden rättar
+det efteråt (högst 3 gånger per token).
+
+**Obs:** Owlbear validerar manifestet – `description` får vara högst 128 tecken, annars laddas tillägget inte.
+**Obs:** GM's Grimoire 4.0 släpps 9 november 2026 med ny backend. Kontrollera då att `GMG_KEY` och
+metadataformatet fortfarande stämmer.
+
+## 8. Scener kan skapas av Claude
+
+Asset Manager → Scenes → ADD → filväljaren (`file_upload`) → Owlbear läser `22x22` ur filnamnet →
+Import. Scenen skapas utan att aktuell scen byts. Tokens: fliken Characters → ADD → Size "Set Columns" = 1.
