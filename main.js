@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=132";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=132";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=132";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW } from "./explore.js?v=132";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=140";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=140";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=140";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=140";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -568,35 +568,75 @@ async function moveParty() {
 }
 
 // Avslöja: kopierar en dimform som du själv har skurit ("Cut") och lägger en ny cirkel runt markören.
-async function revealAroundParty() {
+// Owlbear: en dimform med visible=false är ett HÅL i dimman ("Cut"). Vi ritar alltid ett eget hål,
+// oberoende av hur andra dimformer är ritade.
+async function revealCircle(c, miles) {
   const map = await overviewMap(); if (!map) return;
-  const party = (await OBR.scene.items.getItems((i) => i.metadata?.[PARTY_KEY]))[0];
-  if (!party) { log("Placera gruppmarkören först.", "warn"); return; }
-  const fog = await OBR.scene.items.getItems((i) => i.layer === "FOG" && (i.type === "SHAPE" || i.type === "PATH"));
-  const template = fog.find((i) => i.metadata?.[`${ID}/reveal`]) || fog.sort((a, b) => String(b.lastModified).localeCompare(String(a.lastModified)))[0];
-  if (!template) { log('Rita först en liten dimform och skär den ("Cut") – tillägget kopierar dess inställningar.', "warn"); return; }
-  const miles = parseFloat($("#revealMiles").value) || 0.5;
   const { k } = await overviewToScene(map, [0, 0]);
   const r = miles * PX_PER_MILE_OVERVIEW * k;
-  const c = party.position;
-  const copy = structuredClone(template);
-  delete copy.id; delete copy.lastModified; delete copy.lastModifiedUserId; delete copy.createdUserId; delete copy.zIndex;
-  let item;
-  if (template.type === "SHAPE") {
-    item = buildShape().shapeType("CIRCLE").width(r * 2).height(r * 2).position(c).layer("FOG").style(copy.style).build();
-  } else {
-    const n = 32, cmds = [];
-    for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; cmds.push([i ? 1 : 0, Math.cos(a) * r, Math.sin(a) * r]); }
-    cmds.push([5]);
-    item = buildPath().commands(cmds).fillRule(copy.fillRule || "nonzero").position(c).layer("FOG").style(copy.style).build();
-  }
-  const keep = { ...copy };
-  ["type", "position", "commands", "width", "height", "shapeType", "style", "fillRule", "scale", "rotation", "metadata", "name"].forEach((f) => delete keep[f]);
-  Object.assign(item, keep, { name: "Avslöjat runt sällskapet", metadata: { ...(copy.metadata || {}), [`${ID}/reveal`]: true } });
+  const n = 36, cmds = [];
+  for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; cmds.push([i ? 1 : 0, Math.cos(a) * r, Math.sin(a) * r]); }
+  cmds.push([5]);
+  let color = "#0e0f16";
+  try { color = await OBR.scene.fog.getColor(); } catch {}
+  const item = buildPath().commands(cmds).fillRule("nonzero").position(c).layer("FOG")
+    .fillColor(color).fillOpacity(1).strokeColor(color).strokeOpacity(1).strokeWidth(0)
+    .visible(false).locked(true).name("Avslöjat runt sällskapet")
+    .metadata({ [`${ID}/reveal`]: true }).build();
   await OBR.scene.items.addItems([item]);
-  log(`Avslöjade en cirkel (${miles} mi) runt sällskapet, kopierad från dimformen "${template.name}". Ser det fel ut: ångra (Ctrl+Z).`, "ok");
+  // Äldre avslöjanden (v1.3.0–1.3.2) blev dimma i stället för hål – gör om dem till hål.
+  const old = await OBR.scene.items.getItems((i) => i.layer === "FOG" && i.metadata?.[`${ID}/reveal`] && i.visible);
+  if (old.length) {
+    await OBR.scene.items.updateItems(old.map((i) => i.id), (list) => list.forEach((i) => { i.visible = false; }));
+    log(`Rättade ${old.length} äldre avslöjande(n) som hade blivit dimma i stället för hål.`, "ok");
+  }
 }
 
+async function revealAroundParty() {
+  const party = (await OBR.scene.items.getItems((i) => i.metadata?.[PARTY_KEY]))[0];
+  if (!party) { log("Placera gruppmarkören först (Flytta sällskapet …).", "warn"); return; }
+  const miles = parseFloat($("#revealMiles").value) || 0.5;
+  await revealCircle(party.position, miles);
+  log(`Avslöjade ${miles} mile runt sällskapet. Ser det fel ut: ångra (Ctrl+Z).`, "ok");
+}
+
+// Går en halvtimme (1,5 mile längs vägen, 3 mph) mot Till-platsen, avslöjar och slår för möte.
+async function stepHalfHour() {
+  const map = await overviewMap(); if (!map) return;
+  const to = PLACES.find((p) => p.id === $("#tripTo").value);
+  const { pos: target, k } = await overviewToScene(map, bookToOverview(to.book));
+  let party = (await OBR.scene.items.getItems((i) => i.metadata?.[PARTY_KEY]))[0];
+  if (!party) {
+    const from = PLACES.find((p) => p.id === $("#tripFrom").value);
+    const { pos } = await overviewToScene(map, bookToOverview(from.book));
+    const label = buildLabel().plainText("Sällskapet").backgroundColor("#8b1a1a").fontSize(24).position(pos).layer("TEXT").locked(false).visible(true)
+      .metadata({ [PARTY_KEY]: true, [`${ID}/minutes`]: 0 }).build();
+    await OBR.scene.items.addItems([label]);
+    await revealCircle(pos, parseFloat($("#revealMiles").value) || 0.5);
+    party = label;
+    log(`Gruppmarkör placerad vid ${from.name}.`, "ok");
+  }
+  const pxPerMile = PX_PER_MILE_OVERVIEW * k;
+  const stepCrow = (MPH * 0.5) / ROAD_FACTOR; // 1,5 mile längs vägen ≈ 1,15 mile fågelväg
+  const dx = target.x - party.position.x, dy = target.y - party.position.y;
+  const dist = Math.hypot(dx, dy) / pxPerMile;
+  const arrived = dist <= stepCrow;
+  const f = arrived ? 1 : stepCrow / dist;
+  const pos = { x: party.position.x + dx * f, y: party.position.y + dy * f };
+  const minutes = (party.metadata?.[`${ID}/minutes`] || 0) + 30;
+  await OBR.scene.items.updateItems([party.id], (list) => list.forEach((i) => {
+    i.position = pos;
+    i.metadata[`${ID}/minutes`] = arrived ? 0 : minutes;
+  }));
+  await revealCircle(pos, parseFloat($("#revealMiles").value) || 0.5);
+  const left = Math.max(0, dist - stepCrow) * ROAD_FACTOR;
+  const h = Math.floor(minutes / 60), m = minutes % 60;
+  log(arrived
+    ? `Framme vid ${to.name} efter ${h ? h + " h " : ""}${m} min. Välj nästa Till-plats.`
+    : `En halvtimme till (${h ? h + " h " : ""}${m} min hittills). Kvar till ${to.id}: ca ${left.toFixed(1)} mi.`, "ok");
+  if (arrived) { $("#tripFrom").value = to.id; showTrip(); }
+  checkEncounter();
+}
 async function dumpFog() {
   const fog = await OBR.scene.items.getItems((i) => i.layer === "FOG");
   if (!fog.length) { log("Inga dimformer i scenen."); return; }
@@ -650,6 +690,7 @@ OBR.onReady(async () => {
   $("#tripRollBtn").addEventListener("click", rollTrip);
   $("#partyBtn").addEventListener("click", moveParty);
   $("#revealBtn").addEventListener("click", revealAroundParty);
+  $("#stepBtn").addEventListener("click", stepHalfHour);
   $("#fogDumpBtn").addEventListener("click", dumpFog);
   await loadTokenMap();
   OBR.room.onMetadataChange((m) => { tokenMap = m[TOKENS_KEY] || {}; renderTokenStatus(); });
