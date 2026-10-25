@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "manifest_version": 1,
   "author": "anderse77",
-  "description": "Placerar Curse of Strahd-monster dolda på rätt rutor och kopplar automatiskt spelare och monster till rätt statblock i Game Master's Grimoire.",
+  "description": "Placerar CoS-monster dolda på rätt rutor och kopplar spelare och monster till rätt statblock i Grimoire.",
   "icon": "/cos-owlbear-prep/icon.svg",
   "action": {
     "title": "CoS Prep",
