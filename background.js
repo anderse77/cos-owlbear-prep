@@ -5,8 +5,8 @@
 //    men bara om Grimoire inte kopplat något alls, eller kopplat en annan version av samma monster
 //    (t.ex. ghoul-wotc-srd i stället för ghoul-wotcsrd). Något helt annat som spelledaren valt rörs inte.
 import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { PLAYERS } from "./players.js?v=130";
-import { MONSTERS } from "./locations.js?v=130";
+import { PLAYERS } from "./players.js?v=131";
+import { MONSTERS } from "./locations.js?v=131";
 
 const ID = "com.anderse77.cos-prep";
 const PLACED_KEY = `${ID}/placed`;
@@ -48,10 +48,16 @@ function target(item) {
   if (!n) return null;
   const sheet = item.metadata?.[GMG_KEY]?.sheet;
   // Spelare: exakt namn, eller namnet börjar med spelarens namn ("River 2", "Ragnak (häst)" räknas inte – kräver exakt eller siffra efter).
-  const pl = players.find((x) => n === x.key || new RegExp(`^${x.key}[0-9]*$`).test(n));
+  // Spelare känns igen på namnet ELLER på att token redan har spelarens statblock.
+  const pl = players.find((x) => x.slug === sheet) || players.find((x) => n === x.key || new RegExp(`^${x.key}[0-9]*$`).test(n));
   if (pl) {
-    if (sheet === pl.slug) return null;
-    return { kind: "spelare", data: { slug: pl.slug, hp: pl.p.hp, ac: pl.p.ac, init: pl.p.init, limits: pl.p.limits }, isPlayer: true, from: sheet };
+    const g = item.metadata?.[GMG_KEY];
+    const data = { slug: pl.slug, hp: pl.p.hp, ac: pl.p.ac, init: pl.p.init, limits: pl.p.limits };
+    if (sheet !== pl.slug) return { kind: "spelare", data, isPlayer: true, from: sheet };
+    // Rätt statblock men gamla värden (t.ex. nivå 1) → uppdatera maxHP/AC/init, behåll skada.
+    if (g.maxHp !== pl.p.hp || g.armorClass !== pl.p.ac || g.stats?.initiativeBonus !== pl.p.init)
+      return { kind: "spelare", data, isPlayer: true, from: sheet, refresh: true, oldMax: g.maxHp };
+    return null;
   }
   const mo = monsters.find((x) => n === x.key || new RegExp(`^${x.key}[0-9]*$`).test(n));
   if (mo && mo.m.stats) {
@@ -77,15 +83,28 @@ async function fix(items) {
         const t = byId[i.id];
         const old = i.metadata[GMG_KEY];
         // Var det redan rätt spelare men fel värden lämnar vi HP ifred; annars full HP.
-        i.metadata[GMG_KEY] = gmgData(t.data, t.from ? null : old, t.isPlayer);
+        if (t.refresh) {
+          // Samma statblock, nya värden: behåll skada och använda förmågor.
+          const d = gmgData(t.data, old, t.isPlayer);
+          const dmg = (old.maxHp ?? d.maxHp) - (old.hp ?? old.maxHp ?? d.maxHp);
+          d.hp = Math.max(0, Math.min(d.maxHp, d.maxHp - dmg));
+          d.stats.limits = d.stats.limits.map((l) => {
+            const cur = old.stats?.limits?.find((c) => c.id === l.id);
+            return { ...l, used: cur ? Math.min(cur.used, l.max) : 0 };
+          });
+          i.metadata[GMG_KEY] = d;
+        } else {
+          i.metadata[GMG_KEY] = gmgData(t.data, t.from ? null : old, t.isPlayer);
+        }
       });
     });
-    const lines = todo.map((x) => `${new Date().toLocaleTimeString("sv-SE")} ${x.i.name}: ${x.t.from || "(inget)"} → ${x.t.data.slug}`);
+    const lines = todo.map((x) => `${new Date().toLocaleTimeString("sv-SE")} ${x.i.name}: ` +
+      (x.t.refresh ? `${x.t.data.slug} uppdaterad, max-HP ${x.t.oldMax} → ${x.t.data.hp}, AC ${x.t.data.ac}` : `${x.t.from || "(inget)"} → ${x.t.data.slug} (HP ${x.t.data.hp}, AC ${x.t.data.ac})`));
     lines.forEach((l) => console.log("[CoS Prep] autokoppling", l));
     const meta = await OBR.scene.getMetadata();
     const prev = meta[LOG_KEY] || [];
     await OBR.scene.setMetadata({ [LOG_KEY]: [...lines, ...prev].slice(0, 30) });
-    OBR.notification.show(`CoS Prep kopplade ${todo.length === 1 ? todo[0].i.name : todo.length + " tokens"} till rätt statblock.`, "SUCCESS");
+    OBR.notification.show(`CoS Prep: ${todo.length === 1 ? todo[0].i.name : todo.length + " tokens"} ${todo.every((x) => x.t.refresh) ? "uppdaterad med nya spelarvärden" : "kopplad till rätt statblock"}.`, "SUCCESS");
   } catch (e) {
     console.error("[CoS Prep] autokoppling misslyckades", e);
   } finally {

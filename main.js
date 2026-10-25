@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=130";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=130";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=130";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW } from "./explore.js?v=130";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=131";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=131";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=131";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW } from "./explore.js?v=131";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -181,6 +181,19 @@ async function cellToScene(map, loc, cell, size) {
 
 function currentLocation() {
   return LOCATIONS.find((l) => l.id === $("#location").value);
+}
+
+// Väljer automatiskt den plats vars kartnamn (mapHint) finns i scenens karta.
+async function autoSelectLocation() {
+  try {
+    const maps = await OBR.scene.items.getItems((i) => i.layer === "MAP");
+    const names = maps.map((m) => (m.name || "").toUpperCase());
+    const loc = LOCATIONS.find((l) => l.mapHint && names.some((n) => n.includes(l.mapHint)));
+    if (loc && $("#location").value !== loc.id) {
+      $("#location").value = loc.id;
+      log(`Scenen passar platsen "${loc.title}" – vald automatiskt.`, "ok");
+    }
+  } catch (e) { console.warn(e); }
 }
 
 function renderLocation() {
@@ -486,7 +499,13 @@ function fillPlaces() {
 
 function showTrip() {
   const t = travel($("#tripFrom").value, $("#tripTo").value);
-  $("#tripInfo").textContent = `Fågelväg ${t.crow.toFixed(1)} mi, längs vägen ca ${t.road.toFixed(1)} mi ≈ ${Math.round(t.minutes / 10) * 10} min till fots → ${t.checks} mötesslag (var 30:e minut). Ungefärligt.`;
+  const from = $("#tripFrom").value, to = $("#tripTo").value;
+  if (from === to) { $("#tripInfo").innerHTML = "<b>Välj en annan Till-plats</b> – Från och Till är samma."; return; }
+  const min = Math.round(t.minutes / 10) * 10;
+  const tid = min >= 60 ? `${Math.floor(min / 60)} h ${min % 60} min` : `${min} min`;
+  const road = $("#encWhere").value === "road";
+  $("#tripInfo").innerHTML = `<b>${from} → ${to}: ca ${t.road.toFixed(1)} mi, ${tid} till fots</b><br>` +
+    `${t.checks} mötesslag (ett per halvtimme), möte på ${road ? "18–20" : "15–20"}. Fågelväg ${t.crow.toFixed(1)} mi. Ungefärligt.`;
 }
 
 let tripEncounters = [];
@@ -618,8 +637,10 @@ OBR.onReady(async () => {
   $("#encRemoveBtn").addEventListener("click", removeLastPlaced);
   $("#freeBtn").addEventListener("click", freeMonster);
   fillPlaces();
-  $("#tripFrom").addEventListener("change", showTrip);
-  $("#tripTo").addEventListener("change", showTrip);
+  for (const id of ["#tripFrom", "#tripTo", "#encWhere", "#encTime"]) {
+    $(id).addEventListener("change", showTrip);
+    $(id).addEventListener("input", showTrip);
+  }
   $("#tripRollBtn").addEventListener("click", rollTrip);
   $("#partyBtn").addEventListener("click", moveParty);
   $("#revealBtn").addEventListener("click", revealAroundParty);
@@ -627,8 +648,8 @@ OBR.onReady(async () => {
   await loadTokenMap();
   OBR.room.onMetadataChange((m) => { tokenMap = m[TOKENS_KEY] || {}; renderTokenStatus(); });
   const ready = await OBR.scene.isReady();
-  if (ready) renderLocation();
-  OBR.scene.onReadyChange((r) => r && renderLocation());
+  if (ready) { await autoSelectLocation(); renderLocation(); }
+  OBR.scene.onReadyChange(async (r) => { if (r) { await autoSelectLocation(); renderLocation(); } });
 });
 
 window.addEventListener("error", (e) => log("JS-fel: " + e.message, "warn"));
