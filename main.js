@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=140";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=140";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=140";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=140";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=141";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=141";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=141";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=141";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -570,12 +570,16 @@ async function moveParty() {
 // Avslöja: kopierar en dimform som du själv har skurit ("Cut") och lägger en ny cirkel runt markören.
 // Owlbear: en dimform med visible=false är ett HÅL i dimman ("Cut"). Vi ritar alltid ett eget hål,
 // oberoende av hur andra dimformer är ritade.
-async function revealCircle(c, miles) {
+// Hål formad som en "kapsel" från c till end (eller en cirkel om end saknas), radie = miles.
+async function revealCircle(c, miles, end = null) {
   const map = await overviewMap(); if (!map) return;
   const { k } = await overviewToScene(map, [0, 0]);
   const r = miles * PX_PER_MILE_OVERVIEW * k;
-  const n = 36, cmds = [];
-  for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; cmds.push([i ? 1 : 0, Math.cos(a) * r, Math.sin(a) * r]); }
+  const ex = end ? end.x - c.x : 0, ey = end ? end.y - c.y : 0;
+  const th = Math.atan2(ey, ex), n = 18, pts = [];
+  for (let i = 0; i <= n; i++) { const a = th - Math.PI / 2 + (i / n) * Math.PI; pts.push([ex + Math.cos(a) * r, ey + Math.sin(a) * r]); }
+  for (let i = 0; i <= n; i++) { const a = th + Math.PI / 2 + (i / n) * Math.PI; pts.push([Math.cos(a) * r, Math.sin(a) * r]); }
+  const cmds = pts.map(([x, y], i) => [i ? 1 : 0, x, y]);
   cmds.push([5]);
   let color = "#0e0f16";
   try { color = await OBR.scene.fog.getColor(); } catch {}
@@ -628,7 +632,7 @@ async function stepHalfHour() {
     i.position = pos;
     i.metadata[`${ID}/minutes`] = arrived ? 0 : minutes;
   }));
-  await revealCircle(pos, parseFloat($("#revealMiles").value) || 0.5);
+  await revealCircle(party.position, parseFloat($("#revealMiles").value) || 0.5, pos); // hela sträckan de gick
   const left = Math.max(0, dist - stepCrow) * ROAD_FACTOR;
   const h = Math.floor(minutes / 60), m = minutes % 60;
   log(arrived
