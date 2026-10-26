@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=141";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=141";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=141";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=141";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=142";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=142";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=142";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=142";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -604,6 +604,26 @@ async function revealAroundParty() {
   log(`Avslöjade ${miles} mile runt sällskapet. Ser det fel ut: ångra (Ctrl+Z).`, "ok");
 }
 
+// Återställer översiktskartan: tar bort alla dimformer (hål) och gruppmarkören, så att hela dalen är dold igen.
+let confirmReset = false;
+async function resetOverview() {
+  const map = await overviewMap(); if (!map) return;
+  const fog = await OBR.scene.items.getItems((i) => i.layer === "FOG");
+  const party = await OBR.scene.items.getItems((i) => i.metadata?.[PARTY_KEY]);
+  const ids = [...fog, ...party].map((i) => i.id);
+  if (!ids.length) { log("Kartan är redan återställd."); return; }
+  if (!confirmReset) {
+    confirmReset = true;
+    $("#resetBtn").textContent = `Säker? Tar bort ${fog.length} dimformer + markören – klicka igen`;
+    setTimeout(() => { confirmReset = false; $("#resetBtn").textContent = "Återställ kartan (all dimma tillbaka)"; }, 5000);
+    return;
+  }
+  confirmReset = false;
+  $("#resetBtn").textContent = "Återställ kartan (all dimma tillbaka)";
+  await OBR.scene.items.deleteItems(ids);
+  log(`Kartan återställd: tog bort ${fog.length} dimformer och gruppmarkören. Hela dalen är dold igen.`, "ok");
+}
+
 // Går en halvtimme (1,5 mile längs vägen, 3 mph) mot Till-platsen, avslöjar och slår för möte.
 async function stepHalfHour() {
   const map = await overviewMap(); if (!map) return;
@@ -695,6 +715,7 @@ OBR.onReady(async () => {
   $("#partyBtn").addEventListener("click", moveParty);
   $("#revealBtn").addEventListener("click", revealAroundParty);
   $("#stepBtn").addEventListener("click", stepHalfHour);
+  $("#resetBtn").addEventListener("click", resetOverview);
   $("#fogDumpBtn").addEventListener("click", dumpFog);
   await loadTokenMap();
   OBR.room.onMetadataChange((m) => { tokenMap = m[TOKENS_KEY] || {}; renderTokenStatus(); });
