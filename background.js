@@ -5,8 +5,8 @@
 //    men bara om Grimoire inte kopplat något alls, eller kopplat en annan version av samma monster
 //    (t.ex. ghoul-wotc-srd i stället för ghoul-wotcsrd). Något helt annat som spelledaren valt rörs inte.
 import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { PLAYERS } from "./players.js?v=143";
-import { MONSTERS } from "./locations.js?v=143";
+import { PLAYERS } from "./players.js?v=144";
+import { MONSTERS } from "./locations.js?v=144";
 
 const ID = "com.anderse77.cos-prep";
 const PLACED_KEY = `${ID}/placed`;

@@ -59,6 +59,8 @@ export const MONSTERS = {
   "Guardian Portrait": { slug: "guardianportrait-anderse77", size: 1, custom: true, stats: {"hp": 22, "ac": 5, "init": -5, "limits": [{"id": "Innate 3/day", "max": 12, "used": 0, "resets": ["Long Rest"], "formula": null}]} },
   "Pidlwick II": { slug: "pidlwickii-anderse77", size: 1, custom: true, stats: {"hp": 10, "ac": 14, "init": 2, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
   "Tree Blight": { slug: "treeblight-anderse77", size: 3, custom: true, stats: {"hp": 92, "ac": 15, "init": 0, "limits": [{"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}]} },
+  // --- Old Bonegrinder (kapitel 6). ---
+  "Dretch": { slug: "dretch-wotcsrd", size: 1, stats: {"hp":18,"ac":11,"init":0,"limits":[{"id":"Fetid Cloud","max":1,"used":0,"resets":["Day"],"formula":null},{"id":"Action","max":1,"used":0,"resets":["Round"],"formula":null}]} },
 };
 
 // map.origin = första rutlinjen i pixlar [x, y] när rutnätet inte börjar i hörnet.
@@ -202,6 +204,29 @@ export const LOCATIONS = [
         note: "8 draghästar dricker vid floden (floden syns inte på Beneos-kartan – flytta dem till kanten mot sjön). Skräms inte lätt.",
         monster: "Draft Horse",
         tokens: [[36, 17], [38, 17], [40, 17], [42, 17], [36, 20], [38, 20], [40, 20], [42, 20]].map((cell, i) => ({ name: `Draghäst ${i + 1}`, cell })),
+      },
+    ],
+  },
+  {
+    id: "old-bonegrinder",
+    title: "Old Bonegrinder (O2–O3)",
+    mapHint: "KVARN",
+    map: { width: 3840, height: 2160, cell: 120 },
+    groups: [
+      {
+        area: "O2 Benkvarnen",
+        note: "Morgantha (night hag) sopar golvet i människoskepnad. Säljer drömbakelser (1 gp). Anfalls hon eller vägrar gruppen gå ropar hon på döttrarna. I O1 kan hon knacka tre gånger på tunnan och kalla fram en dretch (max 9) – använd Placera valfritt monster.",
+        monster: "Night Hag",
+        tokens: [{ name: "Morgantha (Night Hag)", cell: [8, 9] }],
+      },
+      {
+        area: "O3 Sovrummet",
+        note: "Bella Sunbane och Offalia Wormwiggle dansar runt kugghjulsaxeln. Två barn (Freek 7, Myrtle 5) i lådorna i garderoben. Försök att befria barnen väcker häxornas vrede. Skatt: 6 smycken à 25 gp i madrassen. Coven: delad trolldom så länge alla tre lever.",
+        monster: "Night Hag",
+        tokens: [
+          { name: "Bella Sunbane (Night Hag)", cell: [16, 7] },
+          { name: "Offalia Wormwiggle (Night Hag)", cell: [19, 9] },
+        ],
       },
     ],
   },
