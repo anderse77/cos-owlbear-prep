@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=150";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=150";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=150";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=150";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=151";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=151";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=151";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=151";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -367,7 +367,27 @@ async function verify() {
     await OBR.viewport.animateToBounds(tb);
   } catch (e) { log("Kunde inte visa: " + e.message, "warn"); }
   log(`Karta: ${map.name} ${map.image.width}×${map.image.height}, dpi ${map.grid.dpi}, skala ${map.scale.x}×${map.scale.y}.`);
-  log(bad ? `${bad} token(s) avviker från planen.` : `Alla ${items.length} tokens står på planerade rutor.`, bad ? "warn" : "ok");
+  log(bad ? `${bad} token(s) avviker från planen. "Flytta till planerade rutor" rättar dem (HP och dolt/synligt behålls).` : `Alla ${items.length} tokens står på planerade rutor.`, bad ? "warn" : "ok");
+}
+
+// Flyttar redan placerade monster till rutorna i planen (t.ex. efter att placeringen rättats i en ny version).
+async function moveToPlan() {
+  const loc = currentLocation();
+  const items = await placedItems(loc.id);
+  if (!items.length) { log("Inget placerat att flytta.", ""); return; }
+  const map = await findMap();
+  if (!map) { log("Hittar ingen karta i scenen.", "warn"); return; }
+  const expected = {};
+  loc.groups.forEach((g) => g.tokens.forEach((t) => (expected[t.name] = { cell: t.cell, size: MONSTERS[g.monster].size })));
+  const pos = {};
+  for (const i of items) {
+    const e = expected[i.name];
+    if (e) pos[i.id] = await cellToScene(map, loc, e.cell, e.size);
+  }
+  const moved = items.filter((i) => pos[i.id] && (Math.abs(pos[i.id].x - i.position.x) > 1 || Math.abs(pos[i.id].y - i.position.y) > 1));
+  if (!moved.length) { log("Alla står redan på planerade rutor.", "ok"); return; }
+  await OBR.scene.items.updateItems(moved.map((i) => i.id), (list) => list.forEach((i) => { i.position = pos[i.id]; }));
+  log(`Flyttade ${moved.length}: ${moved.map((i) => i.name).join(", ")}.`, "ok");
 }
 
 
@@ -693,6 +713,7 @@ OBR.onReady(async () => {
   $("#placeBtn").addEventListener("click", place);
   $("#removeBtn").addEventListener("click", removePlaced);
   $("#verifyBtn").addEventListener("click", verify);
+  $("#moveBtn").addEventListener("click", moveToPlan);
   $("#playersBtn").addEventListener("click", showPlayers);
   $("#syncBtn").addEventListener("click", syncPlayers);
   $("#autoLogBtn").addEventListener("click", async () => {
