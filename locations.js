@@ -457,9 +457,9 @@ export const LOCATIONS = [
     groups: [
       {
         area: "N5 Karnevalsvagnen",
-        note: "'Rictavio's Carnival of Wonders' – hänglås med giftnål. Inne: sabeltandad tiger (84 HP, halvplåt AC 17) tränad att jaga Vistani; anfaller bara Vistani eller i självförsvar. Token står bredvid vagnen men tigern är INNE i den – syns först när vagnen öppnas.",
+        note: "'Rictavio's Carnival of Wonders' – hänglås med giftnål. Inne: sabeltandad tiger (84 HP, halvplåt AC 17) tränad att jaga Vistani; anfaller bara Vistani eller i självförsvar. Tokenen står på vagnens rutor – tigern är inne i vagnen; visa den först när vagnen öppnas.",
         monster: "Armored Saber-Toothed Tiger",
-        tokens: [{ name: "Rictavios tiger", cell: [13, 10] }],
+        tokens: [{ name: "Rictavios tiger", cell: [15.5, 9.5] }],
       },
     ],
   },
