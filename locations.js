@@ -195,7 +195,7 @@ export const LOCATIONS = [
         area: "G Kring elden",
         note: "12 berusade Vistani (Vistana Bandit): nackdel på attacker och färdighetsslag. Anfaller bara om de hotas eller förolämpas; annars vin och fest. En av dem berättar om magikern som Strahd kastade nerför Tser Falls.",
         monster: "Bandit",
-        tokens: [[16, 8], [17, 9], [18, 10], [18, 11], [17, 12], [16, 12], [14, 10], [19, 12], [20, 11], [20, 9], [14, 13], [19, 8]].map((cell, i) => ({ name: `Vistana ${i + 1} (Bandit)`, cell })),
+        tokens: [[16, 8], [16, 9], [18, 10], [17, 11], [17, 12], [16, 13], [14, 10], [20, 12], [20, 11], [20, 9], [14, 13], [19, 8]].map((cell, i) => ({ name: `Vistana ${i + 1} (Bandit)`, cell })),
       },
       {
         area: "G Vagnarna",
@@ -203,7 +203,7 @@ export const LOCATIONS = [
         monster: "Bandit Captain",
         tokens: [
           { name: "Vistana-kapten 1", cell: [18, 7] },
-          { name: "Vistana-kapten 2", cell: [12, 10] },
+          { name: "Vistana-kapten 2", cell: [12, 8] },
           { name: "Vistana-kapten 3", cell: [13, 15] },
         ],
       },
@@ -337,7 +337,7 @@ export const LOCATIONS = [
         area: "N2c Rictavio",
         note: "Färggrann halvalvisk bard – egentligen Rudolph van Richten (hat of disguise, ring of mind shielding). Går ut i gryning och skymning med mat till 'en fattig vän' (tigern i Arasek, N5).",
         monster: "Rictavio",
-        tokens: [{ name: "Rictavio", cell: [21, 14] }],
+        tokens: [{ name: "Rictavio", cell: [22, 13] }],
       },
     ],
   },
@@ -425,7 +425,7 @@ export const LOCATIONS = [
         area: "N4p Biblioteket",
         note: "Lady Fiona Wachter (Priest, AC 10, ingen rustning) – Strahds lojala tjänare och djävulsdyrkande kultledare. Vill bli borgmästare; föreslår att gruppen dödar Izek. Sover med sin döde makes lik i sovrummet (N4o).",
         monster: "Priest",
-        tokens: [{ name: "Lady Fiona Wachter (Priest)", cell: [10, 7] }],
+        tokens: [{ name: "Lady Fiona Wachter (Priest)", cell: [9, 7] }],
       },
       {
         area: "N4n Stellas rum",
@@ -457,9 +457,9 @@ export const LOCATIONS = [
     groups: [
       {
         area: "N5 Karnevalsvagnen",
-        note: "'Rictavio's Carnival of Wonders' – hänglås med giftnål. Inne: sabeltandad tiger (84 HP, halvplåt AC 17) tränad att jaga Vistani; anfaller bara Vistani eller i självförsvar. Flytta tigern till den vagn du väljer som Rictavios.",
+        note: "'Rictavio's Carnival of Wonders' – hänglås med giftnål. Inne: sabeltandad tiger (84 HP, halvplåt AC 17) tränad att jaga Vistani; anfaller bara Vistani eller i självförsvar. Token står bredvid vagnen men tigern är INNE i den – syns först när vagnen öppnas.",
         monster: "Armored Saber-Toothed Tiger",
-        tokens: [{ name: "Rictavios tiger", cell: [16, 10] }],
+        tokens: [{ name: "Rictavios tiger", cell: [13, 10] }],
       },
     ],
   },

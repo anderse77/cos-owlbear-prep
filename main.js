@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=151";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=151";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=151";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=151";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=152";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=152";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=152";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=152";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -192,6 +192,11 @@ async function autoSelectLocation() {
     if (loc && $("#location").value !== loc.id) {
       $("#location").value = loc.id;
       log(`Scenen passar platsen "${loc.title}" – vald automatiskt.`, "ok");
+    }
+    if (!loc && names.length) {
+      const msg = "Ingen plats i listan hör till den här kartan – här finns inga fasta monster att placera.";
+      $("#placedInfo").textContent = msg;
+      log(`${maps[0].name}: ${msg}`, "warn");
     }
   } catch (e) { console.warn(e); }
 }
