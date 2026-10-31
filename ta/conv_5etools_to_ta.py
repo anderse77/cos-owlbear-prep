@@ -68,7 +68,7 @@ for name in names:
     sp={"walk":None,"fly":None,"swim":None,"climb":None,"burrow":None,"hover":None,"lightwalking":None,"notes":None}
     for k,v in m.get("speed",{}).items():
         if k in sp: sp[k]=v if isinstance(v,int) else (v.get("number") if isinstance(v,dict) else None)
-        elif k=="canHover" and v: sp["hover"]=True
+        elif k=="canHover" and v: sp["notes"]="hover"
     acts=m.get("action",[]); multi={"name":"Action","description":None,"uses":1,"resets":["Round"],"formula":None}
     for e in acts:
         if e["name"].startswith("Multiattack"):
