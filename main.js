@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=154";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=154";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=154";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=154";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=160";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=160";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=160";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=160";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -254,11 +254,12 @@ async function place() {
       const t = tokenMap[g.monster];
       const gmg = await gmgMetadata(g.monster);
       for (const tok of g.tokens) {
-        const pos = await cellToScene(map, loc, tok.cell, m.size);
+        const sz = tok.size ?? g.size ?? m.size; // små varelser kan läggas tätare (t.ex. 4 twig blights per ruta)
+        const pos = await cellToScene(map, loc, tok.cell, sz);
         const item = buildImage(t.image, t.grid)
           .name(tok.name)
           .position(pos)
-          .scale({ x: (t.scale?.x || 1) * m.size, y: (t.scale?.y || 1) * m.size })
+          .scale({ x: (t.scale?.x || 1) * sz, y: (t.scale?.y || 1) * sz })
           .rotation(0)
           .layer("CHARACTER")
           .visible(false)
@@ -350,7 +351,7 @@ async function verify() {
   const kx = (sceneDpi / map.grid.dpi) * map.scale.x;
   const ky = (sceneDpi / map.grid.dpi) * map.scale.y;
   const expected = {};
-  loc.groups.forEach((g) => g.tokens.forEach((t) => (expected[t.name] = { cell: t.cell, size: MONSTERS[g.monster].size })));
+  loc.groups.forEach((g) => g.tokens.forEach((t) => (expected[t.name] = { cell: t.cell, size: t.size ?? g.size ?? MONSTERS[g.monster].size })));
   let bad = 0;
   items.forEach((i) => {
     const e = expected[i.name];
@@ -383,7 +384,7 @@ async function moveToPlan() {
   const map = await findMap();
   if (!map) { log("Hittar ingen karta i scenen.", "warn"); return; }
   const expected = {};
-  loc.groups.forEach((g) => g.tokens.forEach((t) => (expected[t.name] = { cell: t.cell, size: MONSTERS[g.monster].size })));
+  loc.groups.forEach((g) => g.tokens.forEach((t) => (expected[t.name] = { cell: t.cell, size: t.size ?? g.size ?? MONSTERS[g.monster].size })));
   const pos = {};
   for (const i of items) {
     const e = expected[i.name];
