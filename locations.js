@@ -87,6 +87,11 @@ export const MONSTERS = {
   "Specter": { slug: "specter-wotcsrd", size: 1, stats: {"hp": 22, "ac": 12, "init": 2, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
   "Roc": { slug: "roc-wotcsrd", size: 4, stats: {"hp": 248, "ac": 15, "init": 8, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}]} },
   "Giant Goat": { slug: "giantgoat-wotcsrd", size: 2, stats: {"hp": 19, "ac": 11, "init": 1, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Arcanaloth": { slug: "arcanaloth-anderse77", size: 1, custom: true, stats: {"hp": 104, "ac": 17, "init": 1, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Spell slot 1", "max": 4, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 2", "max": 3, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 3", "max": 3, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 4", "max": 3, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 5", "max": 2, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 6", "max": 1, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 7", "max": 1, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 8", "max": 1, "used": 0, "resets": ["Long Rest"], "formula": null}]} },
+  "Flameskull": { slug: "flameskull-anderse77", size: 1, custom: true, stats: {"hp": 40, "ac": 13, "init": 3, "limits": [{"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Spell slot 1", "max": 3, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 2", "max": 2, "used": 0, "resets": ["Long Rest"], "formula": null}, {"id": "Spell slot 3", "max": 1, "used": 0, "resets": ["Long Rest"], "formula": null}]} },
+  "Quasit": { slug: "quasit-wotcsrd", size: 1, stats: {"hp": 25, "ac": 13, "init": 3, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Scare", "max": 1, "used": 0, "resets": ["Day"], "formula": null}]} },
+  "Hell Hound": { slug: "hellhound-wotcsrd", size: 1, stats: {"hp": 58, "ac": 15, "init": 1, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Stone Golem": { slug: "stonegolem-wotcsrd", size: 2, stats: {"hp": 220, "ac": 18, "init": 3, "limits": [{"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}]} },
 };
 
 // map.origin = första rutlinjen i pixlar [x, y] när rutnätet inte börjar i hörnet.
@@ -2145,6 +2150,169 @@ export const LOCATIONS = [
             "cell": [
               19,
               10
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  // ---------- Kapitel 13: Amber Temple (X) ----------
+  {
+    "id": "amber-temple-x5",
+    "title": "Amber Temple – tempelhallen (X5)",
+    "mapHint": "AMBER TEMPLE - 1F MITTEN",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "X5a Neferon i statyns huvud",
+        "note": "Arcanaloth i magiskt mörker inne i den stora statyns ihåliga huvud (dispel DC 17); ser genom ögonhålen och anfaller med långdistansbesvärjelser. Truesight. Utger sig för att vara den gamle trollkarlen 'Heinrich Stolt'. Bär guldglasögon (250 gp) och robe of useful items. Rahadin lämnas ifred. Kartan är Beneos tolkning – placeringen är ungefärlig.",
+        "monster": "Arcanaloth",
+        "tokens": [
+          {
+            "name": "Neferon (Arcanaloth)",
+            "cell": [
+              25,
+              9
+            ]
+          }
+        ]
+      },
+      {
+        "area": "X17 Flamskallar vid skottgluggarna",
+        "note": "När Neferon börjar kasta tar tre flameskulls från X17 plats bakom skottgluggarna och kastar magic missile/fireball. Lämnar inte hallen X17. Lagda vid västra väggen – flytta till gluggarna.",
+        "monster": "Flameskull",
+        "tokens": [
+          {
+            "name": "Flameskull X17-1",
+            "cell": [
+              5,
+              3
+            ]
+          },
+          {
+            "name": "Flameskull X17-2",
+            "cell": [
+              5,
+              9
+            ]
+          },
+          {
+            "name": "Flameskull X17-3",
+            "cell": [
+              5,
+              15
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "amber-temple-x9",
+    "title": "Amber Temple – föreläsningssalen (X9)",
+    "mapHint": "AMBER TEMPLE - 1F SODER",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "X9 Vilnius bakom katedern",
+        "note": "Bränd lärling (Mage) gömmer sig bakom katedern (passiv Perception 17, eller DC 12). Girig, förrädisk feg. Bär Master's Amulet (1000 gp) till shield guardian i X35 – vet inte vad den gör. Kartan är Beneos tolkning – placeringen är ungefärlig.",
+        "monster": "Mage",
+        "tokens": [
+          {
+            "name": "Vilnius (Mage)",
+            "cell": [
+              17,
+              10
+            ]
+          }
+        ]
+      },
+      {
+        "area": "X9 Osynlig quasit",
+        "note": "Vilnius osynliga familiar.",
+        "monster": "Quasit",
+        "tokens": [
+          {
+            "name": "Quasit (osynlig)",
+            "cell": [
+              18,
+              10
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "amber-temple-x32",
+    "title": "Amber Temple – nedre östra hallen (X32)",
+    "mapHint": "AMBER TEMPLE - B1 SODER",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "X32 Tre häxor vid södra dörren",
+        "note": "Tre Barovian witches provar lösenord på bärnstensdörren till X33a (vet inte om schaktet från X6). Arga – anfaller. Två döda: den tredje flyger iväg på kvasten (broom of animated attack). Kartan är Beneos tolkning – placeringen är ungefärlig.",
+        "monster": "Barovian Witch",
+        "tokens": [
+          {
+            "name": "Barovian Witch 1",
+            "cell": [
+              9,
+              6
+            ]
+          },
+          {
+            "name": "Barovian Witch 2",
+            "cell": [
+              10,
+              6
+            ]
+          },
+          {
+            "name": "Barovian Witch 3",
+            "cell": [
+              11,
+              6
+            ]
+          }
+        ]
+      },
+      {
+        "area": "X33a Shalx-valvet",
+        "note": "Tre flameskulls vaktar valvet och anfaller direkt. (Valven i söder – stäm av rummet mot bokens karta.)",
+        "monster": "Flameskull",
+        "tokens": [
+          {
+            "name": "Flameskull X33a-1",
+            "cell": [
+              9,
+              10
+            ]
+          },
+          {
+            "name": "Flameskull X33a-2",
+            "cell": [
+              9,
+              9
+            ]
+          },
+          {
+            "name": "Flameskull X33a-3",
+            "cell": [
+              11,
+              9
             ]
           }
         ]
