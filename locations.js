@@ -80,6 +80,9 @@ export const MONSTERS = {
   "Vine Blight": { slug: "vineblight-anderse77", size: 1, custom: true, stats: {"hp": 26, "ac": 12, "init": -1, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Entangling Plants", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}]} },
   "Deva": { slug: "deva-wotcsrd", size: 1, stats: {"hp": 229, "ac": 17, "init": 4, "limits": [{"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 2, "used": 0, "resets": ["Day"], "formula": null}]} },
   "Flesh Golem": { slug: "fleshgolem-wotcsrd", size: 1, stats: {"hp": 127, "ac": 9, "init": -1, "limits": [{"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Goat": { slug: "goat-wotcsrd", size: 1, stats: {"hp": 4, "ac": 10, "init": 0, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Giant Venomous Snake": { slug: "giantvenomoussnake-wotcsrd", size: 1, stats: {"hp": 11, "ac": 14, "init": 4, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Swarm of Venomous Snakes": { slug: "swarmofvenomoussnakes-wotcsrd", size: 1, stats: {"hp": 36, "ac": 14, "init": 4, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
 };
 
 // map.origin = första rutlinjen i pixlar [x, y] när rutnätet inte börjar i hörnet.
@@ -1401,6 +1404,361 @@ export const LOCATIONS = [
             "cell": [
               38,
               10
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  // ---------- Kapitel 10: Berez (U) ----------
+  {
+    "id": "berez-hut",
+    "title": "Berez – Baba Lysagas hydda (U3)",
+    "mapHint": "BABA LYSAGAS HYDDA",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "U3 Baba Lysaga i hyddan",
+        "note": "Baba Lysaga är inne om hon inte lockats ut; fåglarnas skrän gör att hon inte hör någon närma sig. Inne: illusion av ett spädbarn ('Strahd'), blodbadkar, kista med glyph of warding (DC 17, 5d8 thunder) och 4 swarms of insects. Under golvplankorna (3 fot ner) ligger den gröna ädelstenen från Wizard of Wines – den animerar hyddan.",
+        "monster": "Baba Lysaga",
+        "tokens": [
+          {
+            "name": "Baba Lysaga",
+            "cell": [
+              24,
+              13
+            ]
+          }
+        ]
+      },
+      {
+        "area": "U3 Korparna i burarna",
+        "note": "En swarm of ravens i var och en av de två järnburarna vid dörren (arcane lock; knock eller DC 20 Strength). Släpps de anfaller de Baba Lysaga och fågelskrämmorna.",
+        "monster": "Swarm of Ravens",
+        "tokens": [
+          {
+            "name": "Swarm of Ravens (bur 1)",
+            "cell": [
+              22,
+              13
+            ]
+          },
+          {
+            "name": "Swarm of Ravens (bur 2)",
+            "cell": [
+              26,
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "area": "U Fågelskrämmorna i träsket",
+        "note": "Sju scarecrows ser ut som vanliga fågelskrämmor fyllda med korpfjädrar tills någon anfaller dem, Baba Lysaga befaller dem eller någon går närmare än 10 fot. Placerade ungefärligt runt hyddan.",
+        "monster": "Scarecrow",
+        "tokens": [
+          {
+            "name": "Scarecrow 1",
+            "cell": [
+              14,
+              6
+            ]
+          },
+          {
+            "name": "Scarecrow 2",
+            "cell": [
+              30,
+              5
+            ]
+          },
+          {
+            "name": "Scarecrow 3",
+            "cell": [
+              34,
+              13
+            ]
+          },
+          {
+            "name": "Scarecrow 4",
+            "cell": [
+              30,
+              21
+            ]
+          },
+          {
+            "name": "Scarecrow 5",
+            "cell": [
+              15,
+              20
+            ]
+          },
+          {
+            "name": "Scarecrow 6",
+            "cell": [
+              10,
+              13
+            ]
+          },
+          {
+            "name": "Scarecrow 7",
+            "cell": [
+              22,
+              22
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Den krypande hyddan (specialhändelse)",
+        "note": "Stannar gruppen för länge befaller Baba Lysaga hyddan att vakna: rötterna lyfter den ur myren. Slåss tills den förstörs eller ädelstenen tas bort. Token ligger på hyddan – visa den när den vaknar.",
+        "monster": "Baba Lysaga's Creeping Hut",
+        "tokens": [
+          {
+            "name": "Baba Lysagas krypande hydda",
+            "cell": [
+              22,
+              11
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "berez-mansion",
+    "title": "Berez – Ulrichs herrgård (U2)",
+    "mapHint": "ULRICHS HERRGARD",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "U2 Burgomaster Lazlo Ulrichs spöke",
+        "note": "Neutral good ghost, stympad jätte med inälvorna hängande. Berättar Marinas öde om man frågar. Anfaller om hotad eller om gruppen letar skatter. Återuppstår efter 24 h vid 0 HP. Övertygas han om att Marina återfötts som Ireena får han ro.",
+        "monster": "Ghost",
+        "tokens": [
+          {
+            "name": "Lazlo Ulrich (Ghost)",
+            "cell": [
+              15,
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "area": "U2 Trädgården – ormar",
+        "note": "Fyra giant poisonous snakes (2024: Giant Venomous Snake) anfaller den som går mer än 10 fot in i trädgården söder om ruinen. Placerade ungefärligt.",
+        "monster": "Giant Venomous Snake",
+        "tokens": [
+          {
+            "name": "Giant Venomous Snake 1",
+            "cell": [
+              10,
+              15
+            ]
+          },
+          {
+            "name": "Giant Venomous Snake 2",
+            "cell": [
+              14,
+              16
+            ]
+          },
+          {
+            "name": "Giant Venomous Snake 3",
+            "cell": [
+              18,
+              15
+            ]
+          },
+          {
+            "name": "Giant Venomous Snake 4",
+            "cell": [
+              22,
+              16
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "berez-goat-pen",
+    "title": "Berez – gethagnet (U2)",
+    "mapHint": "GETHAGNET",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "U2 Gethagnet",
+        "note": "Nio getter fångade bakom ett stängsel med 50 människoskallar på stolparna. Ingen grind – Baba Lysaga flyger in med skallen. Skadas stängslet skriker skallarna och larmar henne.",
+        "monster": "Goat",
+        "tokens": [
+          {
+            "name": "Get 1",
+            "cell": [
+              14,
+              6
+            ]
+          },
+          {
+            "name": "Get 2",
+            "cell": [
+              17,
+              6
+            ]
+          },
+          {
+            "name": "Get 3",
+            "cell": [
+              19,
+              7
+            ]
+          },
+          {
+            "name": "Get 4",
+            "cell": [
+              13,
+              8
+            ]
+          },
+          {
+            "name": "Get 5",
+            "cell": [
+              16,
+              8
+            ]
+          },
+          {
+            "name": "Get 6",
+            "cell": [
+              19,
+              9
+            ]
+          },
+          {
+            "name": "Get 7",
+            "cell": [
+              14,
+              10
+            ]
+          },
+          {
+            "name": "Get 8",
+            "cell": [
+              17,
+              10
+            ]
+          },
+          {
+            "name": "Get 9",
+            "cell": [
+              16,
+              12
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "berez-monument",
+    "title": "Berez – Marinas monument (U5)",
+    "mapHint": "MARINAS MONUMENT",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "U5 Uppsvällda lik",
+        "note": "Sju uppsvällda lik (Commoner, fart 20 fot, immuna mot charmed/frightened) reser sig ur myren 60 fot väster om monumentet. Vid 0 HP spricker liket och en swarm of poisonous snakes (2024: Swarm of Venomous Snakes) väller ut. Gruppen kan lätt springa ifrån dem.",
+        "monster": "Commoner",
+        "tokens": [
+          {
+            "name": "Walking Corpse 1",
+            "cell": [
+              4,
+              5
+            ]
+          },
+          {
+            "name": "Walking Corpse 2",
+            "cell": [
+              6,
+              7
+            ]
+          },
+          {
+            "name": "Walking Corpse 3",
+            "cell": [
+              3,
+              9
+            ]
+          },
+          {
+            "name": "Walking Corpse 4",
+            "cell": [
+              6,
+              10
+            ]
+          },
+          {
+            "name": "Walking Corpse 5",
+            "cell": [
+              8,
+              4
+            ]
+          },
+          {
+            "name": "Walking Corpse 6",
+            "cell": [
+              2,
+              6
+            ]
+          },
+          {
+            "name": "Walking Corpse 7",
+            "cell": [
+              5,
+              12
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "berez-stones",
+    "title": "Berez – stenkretsen (U6)",
+    "mapHint": "STENKRETSEN",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "U6 Muriel Vinshaw",
+        "note": "Wereraven i människoskepnad (vän till Martikovs) signalerar med lykta. Berättar om Baba Lysaga, fågelskrämmorna och gethagnet. Undviker strid, flyr om hon anfalls och följer inte med.",
+        "monster": "Wereraven",
+        "tokens": [
+          {
+            "name": "Muriel Vinshaw (Wereraven)",
+            "cell": [
+              22,
+              12
             ]
           }
         ]
