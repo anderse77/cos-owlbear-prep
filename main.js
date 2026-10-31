@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=170";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=170";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=170";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=170";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=171";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=171";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=171";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=171";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
@@ -168,9 +168,10 @@ async function cellToScene(map, loc, cell, size) {
   const sceneDpi = await OBR.scene.grid.getDpi();
   const kx = (sceneDpi / map.grid.dpi) * map.scale.x;
   const ky = (sceneDpi / map.grid.dpi) * map.scale.y;
+  const r = map.image.width / loc.map.width; // kartan kan vara nedskalad (t.ex. 2K i stället för 4K)
   const [ox, oy] = loc.map.origin || [0, 0];
-  const px = ox + (cell[0] + size / 2) * loc.map.cell;
-  const py = oy + (cell[1] + size / 2) * loc.map.cell;
+  const px = (ox + (cell[0] + size / 2) * loc.map.cell) * r;
+  const py = (oy + (cell[1] + size / 2) * loc.map.cell) * r;
   return {
     x: map.position.x + (px - map.grid.offset.x) * kx,
     y: map.position.y + (py - map.grid.offset.y) * ky,
@@ -238,7 +239,7 @@ async function place() {
     const map = await findMap();
     if (!map) { log("Hittar ingen karta i scenen.", "warn"); return; }
     if (map.rotation) { log("Kartan är roterad – stöds inte. Sätt rotationen till 0.", "warn"); return; }
-    if (map.image.width !== loc.map.width || map.image.height !== loc.map.height) {
+    if (Math.abs(map.image.width / map.image.height - loc.map.width / loc.map.height) > 0.01) {
       log(`Kartan är ${map.image.width}×${map.image.height}, förväntade ${loc.map.width}×${loc.map.height}. Fel karta/scen?`, "warn");
       return;
     }
@@ -359,7 +360,8 @@ async function verify() {
     const px = (i.position.x - map.position.x) / kx + map.grid.offset.x;
     const py = (i.position.y - map.position.y) / ky + map.grid.offset.y;
     const [ox, oy] = loc.map.origin || [0, 0];
-    const col = (px - ox) / loc.map.cell - size / 2, row = (py - oy) / loc.map.cell - size / 2;
+    const r = map.image.width / loc.map.width;
+    const col = (px / r - ox) / loc.map.cell - size / 2, row = (py / r - oy) / loc.map.cell - size / 2;
     const ok = e && Math.abs(col - e.cell[0]) < 0.25 && Math.abs(row - e.cell[1]) < 0.25;
     if (!ok) bad++;
     const g = i.metadata?.[GMG_KEY];
