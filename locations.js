@@ -83,6 +83,10 @@ export const MONSTERS = {
   "Goat": { slug: "goat-wotcsrd", size: 1, stats: {"hp": 4, "ac": 10, "init": 0, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
   "Giant Venomous Snake": { slug: "giantvenomoussnake-wotcsrd", size: 1, stats: {"hp": 11, "ac": 14, "init": 4, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
   "Swarm of Venomous Snakes": { slug: "swarmofvenomoussnakes-wotcsrd", size: 1, stats: {"hp": 36, "ac": 14, "init": 4, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Vrock": { slug: "vrock-wotcsrd", size: 2, stats: {"hp": 152, "ac": 15, "init": 2, "limits": [{"id": "Stunning Screech", "max": 1, "used": 0, "resets": ["Day"], "formula": "1d6>5"}, {"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>5"}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Specter": { slug: "specter-wotcsrd", size: 1, stats: {"hp": 22, "ac": 12, "init": 2, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Roc": { slug: "roc-wotcsrd", size: 4, stats: {"hp": 248, "ac": 15, "init": 8, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}]} },
+  "Giant Goat": { slug: "giantgoat-wotcsrd", size: 2, stats: {"hp": 19, "ac": 11, "init": 1, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
 };
 
 // map.origin = första rutlinjen i pixlar [x, y] när rutnätet inte börjar i hörnet.
@@ -1759,6 +1763,388 @@ export const LOCATIONS = [
             "cell": [
               22,
               12
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  // ---------- Kapitel 15: Varulvsgrottan (Z) ----------
+  {
+    "id": "werewolf-den-camp",
+    "title": "Varulvsgrottan – vakter, vargarna och källan (Z2–Z4)",
+    "mapHint": "Z2-Z4 VARULVSGROTTAN",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "Z2 Vaktposten",
+        "note": "Aziana och Davanka – varulvar i människoskepnad med spjut på en 5 fot hög avsats. Slår larm; oväsen här hörs i hela grottan och drar dit Z3 och Z5. Slåss till döden. Kartan är Beneos egen tolkning – placeringen är ungefärlig, flytta vid behov.",
+        "monster": "Werewolf",
+        "tokens": [
+          {
+            "name": "Aziana (Werewolf)",
+            "cell": [
+              26,
+              21
+            ]
+          },
+          {
+            "name": "Davanka (Werewolf)",
+            "cell": [
+              28,
+              21
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Z3 Skennis",
+        "note": "Gammal varulv (36 HP – sänk i Grimoire) spelar falskt på elektrumflöjt (250 gp) vid lägerelden; påse med fyra 50 gp-stenar. Döende: 'When Kiril returns, he'll skin you alive.' Kartan är Beneos egen tolkning – placeringen är ungefärlig, flytta vid behov.",
+        "monster": "Werewolf",
+        "tokens": [
+          {
+            "name": "Skennis (Werewolf, 36 HP)",
+            "cell": [
+              12,
+              19
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Z3 Vargarna",
+        "note": "Nio vargar trycker sig bakom Skennis och följer honom.",
+        "monster": "Wolf",
+        "tokens": [
+          {
+            "name": "Varg 1",
+            "cell": [
+              9,
+              18
+            ]
+          },
+          {
+            "name": "Varg 2",
+            "cell": [
+              10,
+              18
+            ]
+          },
+          {
+            "name": "Varg 3",
+            "cell": [
+              11,
+              17
+            ]
+          },
+          {
+            "name": "Varg 4",
+            "cell": [
+              9,
+              20
+            ]
+          },
+          {
+            "name": "Varg 5",
+            "cell": [
+              10,
+              21
+            ]
+          },
+          {
+            "name": "Varg 6",
+            "cell": [
+              11,
+              22
+            ]
+          },
+          {
+            "name": "Varg 7",
+            "cell": [
+              14,
+              17
+            ]
+          },
+          {
+            "name": "Varg 8",
+            "cell": [
+              14,
+              21
+            ]
+          },
+          {
+            "name": "Varg 9",
+            "cell": [
+              13,
+              23
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "werewolf-den-deep",
+    "title": "Varulvsgrottan – djupa grottorna och Moder Natts helgedom (Z5–Z7)",
+    "mapHint": "Z5-Z7 VARULVSGROTTAN",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "Z5a Bianca",
+        "note": "Kirils maka, vithårig varulv i vargform, sover här och anfaller snabbt vid larm. Benen på golvet ger nackdel på Stealth. Kartan är Beneos egen tolkning – placeringen är ungefärlig, flytta vid behov.",
+        "monster": "Werewolf",
+        "tokens": [
+          {
+            "name": "Bianca (Werewolf)",
+            "cell": [
+              8,
+              20
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Z5b Wensencia och Kellen",
+        "note": "Wensencia (varulv, vargform) sover med Kellen (10 år, AC 10, 2 HP, varulvsimmunitet) som kramar en Blinsky-docka. Vid larm låser hon in Kellen i en tom bur i Z7. Greater restoration/remove curse botar Kellen. Kartan är Beneos egen tolkning – placeringen är ungefärlig, flytta vid behov.",
+        "monster": "Werewolf",
+        "tokens": [
+          {
+            "name": "Wensencia (Werewolf)",
+            "cell": [
+              22,
+              23
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Z5b Kellen",
+        "note": "Kellen – icke-stridande (AC 10, 2 HP).",
+        "monster": "Commoner",
+        "tokens": [
+          {
+            "name": "Kellen (2 HP)",
+            "cell": [
+              23,
+              23
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Z7 Zuleika Toranescu",
+        "note": "Emils maka knäböjer framför Moder Natts staty. Vaktar barnen på Kirils order. Återförs Emil (K75a) släpper hon barnen; annars kan hon släppa dem om gruppen dödar Kiril. Skatten vid statyn är förbannad (mardrömmar – ingen vila nattetid). Kartan är Beneos egen tolkning – placeringen är ungefärlig, flytta vid behov.",
+        "monster": "Werewolf",
+        "tokens": [
+          {
+            "name": "Zuleika Toranescu (Werewolf)",
+            "cell": [
+              38,
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Z7 Barnen i burarna",
+        "note": "Åtta barn (AC 10, 1 HP, 1d6+6 år) parvis i fyra av sex burar med stenar på locken. I chock – går inte långt från gruppen. Tas de härifrån medan Kiril lever jagar han dem.",
+        "monster": "Commoner",
+        "tokens": [
+          {
+            "name": "Barn 1 (1 HP)",
+            "cell": [
+              33,
+              5
+            ]
+          },
+          {
+            "name": "Barn 2 (1 HP)",
+            "cell": [
+              34,
+              5
+            ]
+          },
+          {
+            "name": "Barn 3 (1 HP)",
+            "cell": [
+              40,
+              15
+            ]
+          },
+          {
+            "name": "Barn 4 (1 HP)",
+            "cell": [
+              41,
+              15
+            ]
+          },
+          {
+            "name": "Barn 5 (1 HP)",
+            "cell": [
+              38,
+              19
+            ]
+          },
+          {
+            "name": "Barn 6 (1 HP)",
+            "cell": [
+              39,
+              19
+            ]
+          },
+          {
+            "name": "Barn 7 (1 HP)",
+            "cell": [
+              42,
+              14
+            ]
+          },
+          {
+            "name": "Barn 8 (1 HP)",
+            "cell": [
+              42,
+              13
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Z6 Kirils grotta (oftast tom)",
+        "note": "Kiril sover här i vargform när han är hemma. Bakom ett förhänge av människohud: trappa upp till hemlig dörr → Z8. Jaktlaget (Kiril 90 HP, sex varulvar, nio vargar) kommer tillbaka på 18+ på d20 varje timme – läggs inte ut automatiskt. Kartan är Beneos egen tolkning – placeringen är ungefärlig, flytta vid behov.",
+        "monster": "Werewolf",
+        "tokens": []
+      }
+    ]
+  },
+  // ---------- Kapitel 9: Tsolenka Pass (T) ----------
+  {
+    "id": "tsolenka-gate",
+    "title": "Tsolenka Pass – porthuset (T1–T3)",
+    "mapHint": "X2 TSOLENKA PASS - PORTEN",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "T2 Demonstatyerna",
+        "note": "Två förstenade vrocks på porthuset. Väcks om de anfalls eller om gruppen flyger/klättrar förbi porten; jagar flyende och slåss till döden. Fallgallret höjs av sig självt inom 10 fot (1 minut). T3: grön eldridå – 33 (6d10) fire; dispel magic DC 16 dämpar 1 minut.",
+        "monster": "Vrock",
+        "tokens": [
+          {
+            "name": "Vrock 1 (staty)",
+            "cell": [
+              29.5,
+              7.5
+            ]
+          },
+          {
+            "name": "Vrock 2 (staty)",
+            "cell": [
+              29.5,
+              12.5
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tsolenka-bridge",
+    "title": "Tsolenka Pass – stenbron (T7–T9)",
+    "mapHint": "X4 TSOLENKA PASS - BRON",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "T8 Den svartklädda ryttaren",
+        "note": "En manifestation av Strahd på en kolsvart häst mitt på bron – en varning. Interagerar gruppen med den skingras den som aska. Bron är 90 fot lång, 500 fot ovan Luna River. På väg tillbaka (öst→väst): Roc of Mount Ghakis dyker mot bron – griper häst/mula om sådan finns, annars en rollperson; når inte in i vaktrummen.",
+        "monster": "Strahd von Zarovich",
+        "tokens": [
+          {
+            "name": "Strahds manifestation (försvinner vid kontakt)",
+            "cell": [
+              24,
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Roc of Mount Ghakis (händelse)",
+        "note": "Läggs ut vid behov – Gargantuan, 248 HP.",
+        "monster": "Roc",
+        "tokens": []
+      }
+    ]
+  },
+  {
+    "id": "tsolenka-rooftop",
+    "title": "Tsolenka Pass – tornets tak (T6)",
+    "mapHint": "TORNETS TAK",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "T6 Snöjungfrurna (bara om Tarokka-skatten är här)",
+        "note": "Sex snow maidens (Specter, immuna mot kyla, Life Drain gör kyla). 'Begone! The treasure is ours!' Lämnar gruppen inte taket anfaller de. När den sista besegrats dyker skatten upp i snön.",
+        "monster": "Specter",
+        "tokens": [
+          {
+            "name": "Snow Maiden 1",
+            "cell": [
+              16,
+              7
+            ]
+          },
+          {
+            "name": "Snow Maiden 2",
+            "cell": [
+              19,
+              7
+            ]
+          },
+          {
+            "name": "Snow Maiden 3",
+            "cell": [
+              15,
+              9
+            ]
+          },
+          {
+            "name": "Snow Maiden 4",
+            "cell": [
+              19,
+              9
+            ]
+          },
+          {
+            "name": "Snow Maiden 5",
+            "cell": [
+              16,
+              10
+            ]
+          },
+          {
+            "name": "Snow Maiden 6",
+            "cell": [
+              19,
+              10
             ]
           }
         ]
