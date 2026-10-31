@@ -92,6 +92,9 @@ export const MONSTERS = {
   "Quasit": { slug: "quasit-wotcsrd", size: 1, stats: {"hp": 25, "ac": 13, "init": 3, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Scare", "max": 1, "used": 0, "resets": ["Day"], "formula": null}]} },
   "Hell Hound": { slug: "hellhound-wotcsrd", size: 1, stats: {"hp": 58, "ac": 15, "init": 1, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}]} },
   "Stone Golem": { slug: "stonegolem-wotcsrd", size: 2, stats: {"hp": 220, "ac": 18, "init": 3, "limits": [{"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}]} },
+  "Iron Golem": { slug: "irongolem-wotcsrd", size: 2, stats: {"hp": 252, "ac": 20, "init": 9, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>5"}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Gray Ooze": { slug: "grayooze-wotcsrd", size: 1, stats: {"hp": 22, "ac": 9, "init": -2, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
+  "Giant Spider": { slug: "giantspider-wotcsrd", size: 2, stats: {"hp": 26, "ac": 13, "init": 3, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}]} },
 };
 
 // map.origin = första rutlinjen i pixlar [x, y] när rutnätet inte börjar i hörnet.
@@ -2313,6 +2316,247 @@ export const LOCATIONS = [
             "cell": [
               11,
               9
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  // ---------- Kapitel 4: Castle Ravenloft (K) ----------
+  {
+    "id": "ravenloft-k62",
+    "title": "Castle Ravenloft – tjänstefolkets hall och köket (K62, K65)",
+    "mapHint": "K62 RAVENLOFT",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "K62 Cyrus Belview",
+        "note": "Strahds trogne tjänare (mongrelfolk, Keen Hearing and Smell) hasar fram i dimman. Kan portkulans kommandoord (K2). Slåss bara om han hotas; behandlar råttorna i vinkällaren som husdjur. Placering ungefärlig mot Beneos karta.",
+        "monster": "Mongrelfolk",
+        "tokens": [
+          {
+            "name": "Cyrus Belview (Mongrelfolk)",
+            "cell": [
+              16,
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "area": "K65 Köket – zombier i grytan",
+        "note": "Tittar någon i grytan reser sig tre zombier ur den bubblande soppan (13 HP kvar var – sänk i Grimoire).",
+        "monster": "Zombie",
+        "tokens": [
+          {
+            "name": "Zombie i grytan 1 (13 HP)",
+            "cell": [
+              17,
+              2
+            ]
+          },
+          {
+            "name": "Zombie i grytan 2 (13 HP)",
+            "cell": [
+              18,
+              3
+            ]
+          },
+          {
+            "name": "Zombie i grytan 3 (13 HP)",
+            "cell": [
+              17,
+              3
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ravenloft-k28",
+    "title": "Castle Ravenloft – kungens balkong (K28)",
+    "mapHint": "K28 RAVENLOFT",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "K28 Zombier på tronerna",
+        "note": "Två Strahd zombies hänger orörliga på tronerna tills någon stör dem eller kommer inom räckhåll. Placering ungefärlig mot Beneos karta.",
+        "monster": "Strahd Zombie",
+        "tokens": [
+          {
+            "name": "Strahd Zombie 1 (tronen)",
+            "cell": [
+              15,
+              2
+            ]
+          },
+          {
+            "name": "Strahd Zombie 2 (tronen)",
+            "cell": [
+              18,
+              2
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ravenloft-k30",
+    "title": "Castle Ravenloft – kungens räknekammare (K30)",
+    "mapHint": "K30 RAVENLOFT",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "K30 Lief Lipsiege",
+        "note": "Bokhållare (Commoner) fastkedjad vid skrivbordet; lämnar aldrig rummet. Drar i ett rep vid hot (K31 – fällan) och skickar 1d6 skuggor (slå på tabellen). Placering ungefärlig mot Beneos karta.",
+        "monster": "Commoner",
+        "tokens": [
+          {
+            "name": "Lief Lipsiege",
+            "cell": [
+              20,
+              3
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ravenloft-k78",
+    "title": "Castle Ravenloft – glödpannerummet (K78)",
+    "mapHint": "K78 RAVENLOFT",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "K78 Järnryttarna",
+        "note": "Två järngolemer (ryttare + häst = en varelse) i alkoverna. Lämnar aldrig rummet; anfaller bara på villkoren i boken (fel element i glödpannan m.m.). Glödpannan teleporterar till Krezk (S17), Tsolenka (T4) m.fl. Placering ungefärlig mot Beneos karta.",
+        "monster": "Iron Golem",
+        "tokens": [
+          {
+            "name": "Iron Golem (norra alkoven)",
+            "cell": [
+              10,
+              4
+            ]
+          },
+          {
+            "name": "Iron Golem (södra alkoven)",
+            "cell": [
+              10,
+              12
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ravenloft-k73",
+    "title": "Castle Ravenloft – fängelsehålorna (K73–K75)",
+    "mapHint": "K73-K76 RAVENLOFT",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "K75a Emil Toranescu",
+        "note": "Varulv (72 HP) i cellen; påstår sig vara från Vallaki. Släpps han anfaller han när tillfälle ges – om gruppen inte tar honom till Zuleika (Z7). Vilken cell är ungefärligt. Placering ungefärlig mot Beneos karta.",
+        "monster": "Werewolf",
+        "tokens": [
+          {
+            "name": "Emil Toranescu (Werewolf, 72 HP)",
+            "cell": [
+              24,
+              10
+            ]
+          }
+        ]
+      },
+      {
+        "area": "K74g Gray ooze",
+        "note": "Gray ooze klistrad mot golvet i cellen; under vattnet i praktiken osynlig. Placering ungefärlig mot Beneos karta.",
+        "monster": "Gray Ooze",
+        "tokens": [
+          {
+            "name": "Gray Ooze (cell)",
+            "cell": [
+              8,
+              10
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ravenloft-k86",
+    "title": "Castle Ravenloft – Strahds grav (K86)",
+    "mapHint": "K86 RAVENLOFT",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 240
+    },
+    "groups": [
+      {
+        "area": "K86 Strahds kista",
+        "note": "Strahd vilar här på dagen (om han inte är någon annanstans). Kistan: Strahd återvänder hit i dimform vid 0 HP. Tokenen läggs dold – ta bort om han inte är här.",
+        "monster": "Strahd von Zarovich",
+        "tokens": [
+          {
+            "name": "Strahd (i kistan)",
+            "cell": [
+              7,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "area": "K86 Tre vampyrbrudar",
+        "note": "Tre vampire spawn-brudar i smutsiga klänningar ligger under jorden vid östra väggen och reser sig när någon närmar sig kistan. Bär smycken (se Treasure). Placering ungefärlig mot Beneos karta.",
+        "monster": "Vampire Spawn",
+        "tokens": [
+          {
+            "name": "Vampyrbrud 1",
+            "cell": [
+              11,
+              2
+            ]
+          },
+          {
+            "name": "Vampyrbrud 2",
+            "cell": [
+              11,
+              5
+            ]
+          },
+          {
+            "name": "Vampyrbrud 3",
+            "cell": [
+              12,
+              5
             ]
           }
         ]

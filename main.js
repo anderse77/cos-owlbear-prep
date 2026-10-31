@@ -1,8 +1,8 @@
 import OBR, { buildImage, buildLabel, buildPath, buildShape } from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
-import { MONSTERS, LOCATIONS } from "./locations.js?v=160";
-import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=160";
-import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=160";
-import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=160";
+import { MONSTERS, LOCATIONS } from "./locations.js?v=170";
+import { PLAYERS, PLAYERS_UPDATED } from "./players.js?v=170";
+import { DAY, NIGHT, HOUSES, ENCOUNTER_RULES } from "./encounters.js?v=170";
+import { PLACES, travel, OVERVIEW, bookToOverview, PX_PER_MILE_OVERVIEW, MPH, ROAD_FACTOR } from "./explore.js?v=170";
 
 const ID = "com.anderse77.cos-prep";
 const TOKENS_KEY = `${ID}/tokens`; // rummets metadata: monsternamn -> bild
