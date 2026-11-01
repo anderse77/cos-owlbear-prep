@@ -95,6 +95,9 @@ export const MONSTERS = {
   "Iron Golem": { slug: "irongolem-wotcsrd", size: 2, stats: {"hp": 252, "ac": 20, "init": 9, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>5"}, {"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}]} },
   "Gray Ooze": { slug: "grayooze-wotcsrd", size: 1, stats: {"hp": 22, "ac": 9, "init": -2, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": null}]} },
   "Giant Spider": { slug: "giantspider-wotcsrd", size: 2, stats: {"hp": 26, "ac": 13, "init": 3, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}]} },
+  "Clay Golem": { slug: "claygolem-wotcsrd", size: 2, stats: {"hp": 123, "ac": 14, "init": 3, "limits": [{"id": "Multiattack", "max": 2, "used": 0, "resets": ["Round"], "formula": null}, {"id": "Bonus", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}]} },
+  "Animated Armor": { slug: "animatedarmor-wotcsrd", size: 1, stats: {"hp": 33, "ac": 18, "init": 2, "limits": []} },
+  "Young Blue Dragon": { slug: "youngbluedragon-wotcsrd", size: 2, stats: {"hp": 152, "ac": 18, "init": 4, "limits": [{"id": "Action", "max": 1, "used": 0, "resets": ["Round"], "formula": "1d6>4"}, {"id": "Multiattack", "max": 3, "used": 0, "resets": ["Round"], "formula": null}]} },
 };
 
 // map.origin = första rutlinjen i pixlar [x, y] när rutnätet inte börjar i hörnet.
@@ -2557,6 +2560,691 @@ export const LOCATIONS = [
             "cell": [
               12,
               5
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  // ---------- Ersättningskartor: Argynvostholt, Yester Hill, Van Richtens torn ----------
+  {
+    "id": "argynvostholt-1f",
+    "title": "Argynvostholt – 1F (ersättningskarta Fidatov Manor)",
+    "mapHint": "ARGYNVOSTHOLT 1F",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "Q4 Balsalen – spindlar",
+        "note": "Ersättningskarta: det runda rummet i väster får vara balsalen. Nio giant spiders i nät i taket; de anfaller när någon går in.",
+        "monster": "Giant Spider",
+        "tokens": [
+          {
+            "name": "Giant Spider 1",
+            "cell": [
+              15,
+              10
+            ]
+          },
+          {
+            "name": "Giant Spider 2",
+            "cell": [
+              17,
+              10
+            ]
+          },
+          {
+            "name": "Giant Spider 3",
+            "cell": [
+              19,
+              10
+            ]
+          },
+          {
+            "name": "Giant Spider 4",
+            "cell": [
+              15,
+              12
+            ]
+          },
+          {
+            "name": "Giant Spider 5",
+            "cell": [
+              19,
+              12
+            ]
+          },
+          {
+            "name": "Giant Spider 6",
+            "cell": [
+              15,
+              14
+            ]
+          },
+          {
+            "name": "Giant Spider 7",
+            "cell": [
+              17,
+              14
+            ]
+          },
+          {
+            "name": "Giant Spider 8",
+            "cell": [
+              19,
+              14
+            ]
+          },
+          {
+            "name": "Giant Spider 9",
+            "cell": [
+              17,
+              12
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Q11 Savid (köket)",
+        "note": "Ersättningskarta: rummet nere till vänster. Savid (Scout, 4 HP) är förföljd och desperat; Strahd-skuggan har tagit hans tjänst. Hjälper gruppen om de hjälper honom.",
+        "monster": "Scout",
+        "tokens": [
+          {
+            "name": "Savid (Scout)",
+            "cell": [
+              18,
+              19
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Q13 Kapellet – revenants",
+        "note": "Ersättningskarta: den långa salen i norr får vara kapellet. Tre revenants (Ordern av silverdraken) sitter och ber. De anfaller bara om de störs eller om gruppen bär Strahds tjänares tecken.",
+        "monster": "Revenant",
+        "tokens": [
+          {
+            "name": "Revenant (kapellet) 1",
+            "cell": [
+              26,
+              4
+            ]
+          },
+          {
+            "name": "Revenant (kapellet) 2",
+            "cell": [
+              29,
+              4
+            ]
+          },
+          {
+            "name": "Revenant (kapellet) 3",
+            "cell": [
+              32,
+              4
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "argynvostholt-2f",
+    "title": "Argynvostholt – 2F (ersättningskarta Fidatov Manor)",
+    "mapHint": "ARGYNVOSTHOLT 2F",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "Q27 Fantomkrigare",
+        "note": "Ersättningskarta: galleriet i väster. Fyra phantom warriors patrullerar. Försvinner om gruppen övertygar dem om att de hjälper till att återtända fyren.",
+        "monster": "Phantom Warrior",
+        "tokens": [
+          {
+            "name": "Phantom Warrior Q27-1",
+            "cell": [
+              18,
+              10
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q27-2",
+            "cell": [
+              20,
+              10
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q27-3",
+            "cell": [
+              18,
+              14
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q27-4",
+            "cell": [
+              20,
+              14
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Q28 Fantomkrigare",
+        "note": "Ersättningskarta: sovrummet uppe till vänster. Tre phantom warriors.",
+        "monster": "Phantom Warrior",
+        "tokens": [
+          {
+            "name": "Phantom Warrior Q28-1",
+            "cell": [
+              17,
+              5
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q28-2",
+            "cell": [
+              19,
+              5
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q28-3",
+            "cell": [
+              18,
+              6
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Q36 Vladimir Horngaard",
+        "note": "Ersättningskarta: rummet till höger. Vladimir sitter vid kaminen. Han vill INTE att Strahd dör (då slutar hans plåga) – han vill att Strahd lider. Första gången han tar skada dyker sex phantom warriors upp (dolda tokens nedan – visa då).",
+        "monster": "Vladimir Horngaard",
+        "tokens": [
+          {
+            "name": "Vladimir Horngaard",
+            "cell": [
+              35,
+              15
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Q36 Fantomkrigare (dyker upp)",
+        "note": "Visas först när Vladimir tar skada första gången.",
+        "monster": "Phantom Warrior",
+        "tokens": [
+          {
+            "name": "Phantom Warrior Q36-1",
+            "cell": [
+              33,
+              13
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q36-2",
+            "cell": [
+              37,
+              13
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q36-3",
+            "cell": [
+              33,
+              15
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q36-4",
+            "cell": [
+              37,
+              15
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q36-5",
+            "cell": [
+              34,
+              17
+            ]
+          },
+          {
+            "name": "Phantom Warrior Q36-6",
+            "cell": [
+              36,
+              17
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Q37 Sir Godfrey och revenants",
+        "note": "Ersättningskarta: rummet uppe till höger. Sir Godfrey Gwilym och fyra revenants. Godfrey är bitter men kan övertalas (DC 15 Persuasion efter att gruppen visat att de motarbetar Strahd).",
+        "monster": "Revenant",
+        "tokens": [
+          {
+            "name": "Sir Godfrey Gwilym (Revenant)",
+            "cell": [
+              37,
+              5
+            ]
+          },
+          {
+            "name": "Revenant Q37-1",
+            "cell": [
+              35,
+              4
+            ]
+          },
+          {
+            "name": "Revenant Q37-2",
+            "cell": [
+              39,
+              4
+            ]
+          },
+          {
+            "name": "Revenant Q37-3",
+            "cell": [
+              35,
+              6
+            ]
+          },
+          {
+            "name": "Revenant Q37-4",
+            "cell": [
+              39,
+              6
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "yester-hill-circle",
+    "title": "Yester Hill – druidernas cirkel (ersättning: Berez-stenkretsen)",
+    "mapHint": "YESTER HILL DRUIDCIRKEL",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 80
+    },
+    "groups": [
+      {
+        "area": "Y3 Druider i gravarna",
+        "note": "Ersättningskarta (Berez-stenkretsen). Sex druider ligger dolda i grunda gravar runt kullens topp och reser sig när gruppen kommer fram (eller när Strahd-ritualen börjar).",
+        "monster": "Druid",
+        "tokens": [
+          {
+            "name": "Druid 1",
+            "cell": [
+              33,
+              13
+            ]
+          },
+          {
+            "name": "Druid 2",
+            "cell": [
+              29,
+              21
+            ]
+          },
+          {
+            "name": "Druid 3",
+            "cell": [
+              20,
+              21
+            ]
+          },
+          {
+            "name": "Druid 4",
+            "cell": [
+              15,
+              13
+            ]
+          },
+          {
+            "name": "Druid 5",
+            "cell": [
+              19,
+              5
+            ]
+          },
+          {
+            "name": "Druid 6",
+            "cell": [
+              29,
+              5
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Y3 Berserkers i gravarna",
+        "note": "Sex berserkers (Barovianska barbarer) i gravarna mellan druiderna.",
+        "monster": "Berserker",
+        "tokens": [
+          {
+            "name": "Berserker 1",
+            "cell": [
+              32,
+              17
+            ]
+          },
+          {
+            "name": "Berserker 2",
+            "cell": [
+              24,
+              22
+            ]
+          },
+          {
+            "name": "Berserker 3",
+            "cell": [
+              16,
+              17
+            ]
+          },
+          {
+            "name": "Berserker 4",
+            "cell": [
+              16,
+              9
+            ]
+          },
+          {
+            "name": "Berserker 5",
+            "cell": [
+              24,
+              4
+            ]
+          },
+          {
+            "name": "Berserker 6",
+            "cell": [
+              32,
+              8
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "yester-hill-tree",
+    "title": "Yester Hill – Gulthias-trädet (ersättning: Stonegarden 4)",
+    "mapHint": "YESTER HILL (STONEGARDEN 4)",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 120
+    },
+    "groups": [
+      {
+        "area": "Y4 Gulthias-trädet – Wintersplinter",
+        "note": "Det stora trädet uppe till vänster får vara Gulthias-trädet. Om druiderna fullbordar ritualen (med den gröna ädelstenen från Wizard of Wines) vaknar Wintersplinter, en tree blight. Visa token då.",
+        "monster": "Tree Blight",
+        "tokens": [
+          {
+            "name": "Wintersplinter (Tree Blight)",
+            "cell": [
+              7,
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Y4 Vine blights",
+        "note": "Tre vine blights vaktar trädet.",
+        "monster": "Vine Blight",
+        "tokens": [
+          {
+            "name": "Vine Blight 1",
+            "cell": [
+              12,
+              7
+            ]
+          },
+          {
+            "name": "Vine Blight 2",
+            "cell": [
+              12,
+              10
+            ]
+          },
+          {
+            "name": "Vine Blight 3",
+            "cell": [
+              9,
+              12
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Y4 Needle blights",
+        "note": "Sex needle blights runt trädet.",
+        "monster": "Needle Blight",
+        "tokens": [
+          {
+            "name": "Needle Blight 1",
+            "cell": [
+              14,
+              5
+            ]
+          },
+          {
+            "name": "Needle Blight 2",
+            "cell": [
+              14,
+              8
+            ]
+          },
+          {
+            "name": "Needle Blight 3",
+            "cell": [
+              14,
+              11
+            ]
+          },
+          {
+            "name": "Needle Blight 4",
+            "cell": [
+              11,
+              13
+            ]
+          },
+          {
+            "name": "Needle Blight 5",
+            "cell": [
+              7,
+              13
+            ]
+          },
+          {
+            "name": "Needle Blight 6",
+            "cell": [
+              4,
+              13
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Y4 Twig blights",
+        "note": "Tolv twig blights (små) i snåren.",
+        "monster": "Twig Blight",
+        "size": 0.5,
+        "tokens": [
+          {
+            "name": "Twig Blight 1",
+            "cell": [
+              16.0,
+              9.0
+            ]
+          },
+          {
+            "name": "Twig Blight 2",
+            "cell": [
+              16.5,
+              9.0
+            ]
+          },
+          {
+            "name": "Twig Blight 3",
+            "cell": [
+              17.0,
+              9.0
+            ]
+          },
+          {
+            "name": "Twig Blight 4",
+            "cell": [
+              17.5,
+              9.0
+            ]
+          },
+          {
+            "name": "Twig Blight 5",
+            "cell": [
+              16.0,
+              9.5
+            ]
+          },
+          {
+            "name": "Twig Blight 6",
+            "cell": [
+              16.5,
+              9.5
+            ]
+          },
+          {
+            "name": "Twig Blight 7",
+            "cell": [
+              17.0,
+              9.5
+            ]
+          },
+          {
+            "name": "Twig Blight 8",
+            "cell": [
+              17.5,
+              9.5
+            ]
+          },
+          {
+            "name": "Twig Blight 9",
+            "cell": [
+              16.0,
+              10.0
+            ]
+          },
+          {
+            "name": "Twig Blight 10",
+            "cell": [
+              16.5,
+              10.0
+            ]
+          },
+          {
+            "name": "Twig Blight 11",
+            "cell": [
+              17.0,
+              10.0
+            ]
+          },
+          {
+            "name": "Twig Blight 12",
+            "cell": [
+              17.5,
+              10.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "van-richten-tower",
+    "title": "Van Richtens torn – V4–V7 (ersättning: Tsolenka-tornet)",
+    "mapHint": "V4-V7 VAN RICHTENS TORN",
+    "map": {
+      "width": 3840,
+      "height": 2160,
+      "cell": 240
+    },
+    "groups": [
+      {
+        "area": "V4 Lerjättar (vänster våning)",
+        "note": "Ersättningskarta: vänster oktagon = nedre våningen. Fyra clay golems står stilla som statyer. De anfaller den som inte säger lösenordet (Rictavio vet det).",
+        "monster": "Clay Golem",
+        "tokens": [
+          {
+            "name": "Clay Golem 1",
+            "cell": [
+              2,
+              3
+            ]
+          },
+          {
+            "name": "Clay Golem 2",
+            "cell": [
+              5,
+              3
+            ]
+          },
+          {
+            "name": "Clay Golem 3",
+            "cell": [
+              2,
+              5
+            ]
+          },
+          {
+            "name": "Clay Golem 4",
+            "cell": [
+              5,
+              5
+            ]
+          }
+        ]
+      },
+      {
+        "area": "V7 Animerad rustning (höger våning)",
+        "note": "Ersättningskarta: höger oktagon = övre våningen. En animated armor vaktar.",
+        "monster": "Animated Armor",
+        "tokens": [
+          {
+            "name": "Animated Armor",
+            "cell": [
+              12,
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "area": "Händelse: ung blå drake",
+        "note": "Om Ezmerelda eller Rictavio har satt fällan på dörren kan en young blue dragon dyka upp. Token utanför dörren – visa vid behov.",
+        "monster": "Young Blue Dragon",
+        "tokens": [
+          {
+            "name": "Young Blue Dragon",
+            "cell": [
+              4,
+              0
             ]
           }
         ]
